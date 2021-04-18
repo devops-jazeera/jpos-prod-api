@@ -206,7 +206,7 @@
     
     </table>
     <div>
-      <table id="invoiceDetails" style="margin-top: 20px;" width="100%" class="item-table" cellpadding="0"
+      <table id="invoiceDetails" style="margin-top: 20px;color: black;font-weight: bold;" width="100%" class="item-table" cellpadding="0"
         cellspacing="0">
         <thead>
           <tr>
@@ -241,6 +241,7 @@
             <th class="th" style="font-size: 12px; font-weight: normal">المبلغ الكلي</th>
           </tr>
         </thead>
+        <tbody style="color: black;font-weight: bold;">
         {{#each salesLine}}
         <tr class="tab-data">
           <td class="td">{{this.sNo}}</td>
@@ -293,6 +294,7 @@
 
       </tr>
         {{/each}}
+        </tbody>
       </table>
 
       <table width="100%" style="text-align:right; margin-top: 8px;">

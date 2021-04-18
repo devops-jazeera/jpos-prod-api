@@ -225,19 +225,19 @@
 
         </table>
         <div>
-            <table id="invoiceDetails" style="margin-top: 20px;" width="100%" class="item-table" cellpadding="0"
+            <table id="invoiceDetails" style="margin-top: 20px;color: black;font-weight: bold;" width="100%" class="item-table" cellpadding="0"
                 cellspacing="0">
                 <thead>
                     <tr>
-                        <th class="th" style="font-weight:normal">S.No</th>
-                        <th class="th" style="font-weight:normal">Item No</th>
-                        <th class="th" style="font-weight:normal">Description</th>
-                        <!-- <th class="th" style="font-weight:normal">Shipping Date</th> -->
-                        <th class="th" style="font-weight:normal">Qty</th>
-                        <th class="th" style="font-weight:normal">Price</th>
-                        <th class="th" style="font-weight:normal">Discount</th>
-                        <th class="th" style="font-weight:normal">Net Amnt Before VAT</th>
-                        <th class="th" style="font-weight:normal">
+                        <th class="th" >S.No</th>
+                        <th class="th" >Item No</th>
+                        <th class="th" >Description</th>
+                        <!-- <th class="th" >Shipping Date</th> -->
+                        <th class="th" >Qty</th>
+                        <th class="th" >Price</th>
+                        <th class="th" >Discount</th>
+                        <th class="th" >Net Amnt Before VAT</th>
+                        <th class="th" >
                             <table style="border-collapse: collapse !important;border:none !important;width:100%">
                                 <tr class="td">
                                     <td class="inline-table"
@@ -250,9 +250,10 @@
                                 </tr>
                             </table>
                         </th>
-                        <th class="th" style="font-weight:normal">Net Amnt after VAT</th>
+                        <th class="th" >Net Amnt after VAT</th>
                     </tr>
                 </thead>
+                <tbody style="color: black;font-weight: bold;">
                 {{#each salesLine}}
                 <tr class="tab-data">
                     <td class="td">{{this.sNo}}</td>
@@ -307,64 +308,12 @@
 
 
                 {{/each}}
+                </tbody>
             </table>
 
 
 
-            <table width="100%" style="text-align:right; margin-top: 8px">
-                <tr class="tab-data">
-                    <td class="td">{{this.sNo}}</td>
-                    <td class="td">
-                        <div style="font-size:13px">
-                            {{this.itemid}}
-                        </div>
-
-
-                    </td>
-                    <td class="td description-data">
-
-                        <span style="font-size:13px">
-                            {{this.inventsizeid}}
-                        </span>
-                        <span>
-
-                        </span>
-
-
-
-                    </td>
-                    <!-- <td class="td">{{deliveryDate}}</td> -->
-                    <td class="td">
-
-                        {{this.salesQty}}
-                    </td>
-                    <td class="td">
-
-                        {{this.salesprice}}
-                    </td>
-                    <td class="td">
-                        {{this.lineTotalDisc}}
-                    </td>
-                    <td class="td">{{this.lineAmountBeforeVat}}</td>
-                    <td class="td">
-                        <table style="border-collapse: collapse;border:none !important;width:100%">
-                            <tr class="td inline-table">
-                                <td class="inline-table" style="border:none;">{{this.vat}}%</td>
-                            </tr>
-                            <tr>
-                                <td class="td" style="border:none !important;"> {{this.vatAmount}} </td>
-                            </tr>
-                        </table>
-
-                    </td>
-                    <td class="td">
-                        {{this.lineAmount}}
-                    </td>
-
-                </tr>
-
-
-            </table>
+          
         </div>
 
     </div>

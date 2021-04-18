@@ -98,12 +98,12 @@ var RawQuery = /** @class */ (function () {
                             ? this.sessionInfo.salesmanid[0].salesman
                             : null) + "'\n          END\n           ) as salesman,\n           (CASE \n            WHEN c.dimension6_!='' THEN concat(d.num)\n            ELSE '" + (this.sessionInfo && this.sessionInfo.salesmanid.length > 0
                             ? this.sessionInfo.salesmanid[0].salesmanid
-                            : null) + "'\n        END\n         ) as salesmanid\n       from custtable c\n       left join dimensions d on c.dimension6_ = d.num\n       where accountnum in ('" + accountNum1 + "' ";
+                            : null) + "'\n        END\n         ) as salesmanid\n       from custtable c\n       left join dimensions d on c.dimension6_ = d.num\n       where UPPER(accountnum) in (UPPER('" + accountNum1 + "') ";
                         if (accountnum2) {
-                            query += ", '" + accountnum2 + "'";
+                            query += ", UPPER('" + accountnum2 + "') ";
                         }
                         if (accountnum3) {
-                            query += ", '" + accountnum3 + "'";
+                            query += ", UPPER('" + accountnum3 + "') ";
                         }
                         query += ") ";
                         return [4 /*yield*/, this.db.query(query)];

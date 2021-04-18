@@ -50,7 +50,6 @@ var UsergroupconfigDAO_1 = require("../repos/UsergroupconfigDAO");
 var UpdateInventoryService_1 = require("../services/UpdateInventoryService");
 var InventtransService_1 = require("../services/InventtransService");
 var InventTransDAO_1 = require("../repos/InventTransDAO");
-var Watcher_1 = require("../../utils/Watcher");
 var typeorm_2 = require("typeorm");
 var Log_1 = require("../../utils/Log");
 var uuid_1 = __importDefault(require("uuid"));
@@ -58,7 +57,6 @@ var UnSyncedTransactions_1 = require("../../entities/UnSyncedTransactions");
 var ENV_STORE_ID = process.env ? process.env.ENV_STORE_ID : null;
 var WorkflowService = /** @class */ (function () {
     function WorkflowService() {
-        var _this = this;
         this.workflowDAO = new WorkflowDAO_1.WorkflowDAO();
         this.rawQuery = new RawQuery_1.RawQuery();
         this.usergroupconfigDAO = new UsergroupconfigDAO_1.UsergroupconfigDAO();
@@ -67,10 +65,10 @@ var WorkflowService = /** @class */ (function () {
         this.inventtransDAO = new InventTransDAO_1.InventorytransDAO();
         this.inventtransService = new InventtransService_1.InventtransService();
         this.db = typeorm_1.getManager();
-        Watcher_1.DBEvent().on("workflow", function (value) {
-            console.log("&&&&&&&&&&&&&&&&workflow watcher&&&&&&&&&&&&&&&&&&&: ", value);
-            _this.workflowUpdate(value);
-        });
+        // DBEvent().on("workflow", (value: any) => {
+        //   console.log("&&&&&&&&&&&&&&&&workflow watcher&&&&&&&&&&&&&&&&&&&: ", value);
+        //   this.workflowUpdate(value);
+        // });
     }
     WorkflowService.prototype.entity = function (id) {
         return __awaiter(this, void 0, void 0, function () {
@@ -226,7 +224,7 @@ var WorkflowService = /** @class */ (function () {
                     case 13:
                         canSendForApproval = _b.sent();
                         if (!canSendForApproval) return [3 /*break*/, 20];
-                        if (![5, 8, 9].includes(salesData.movementType.id)) return [3 /*break*/, 14];
+                        if (![5, 8, 9, 11].includes(salesData.movementType.id)) return [3 /*break*/, 14];
                         item.statusId = "PENDINGRMAPPROVAL";
                         if (RM_AND_RA.rm && RM_AND_RA.rm != "") {
                             item.pendingWith = RM_AND_RA.rm;

@@ -6,6 +6,13 @@
   <meta http-equiv="Content-Language" content="ar-sy" />
   <meta name="description" content="بيسب" />
   <style>
+    footer {
+      position: fixed;
+      bottom: 20px;
+      width: 100%;
+      text-align: center;
+    }
+
     body {
       font-family: " Courier New", Courier, monospace !important;
       font-size: 11px;
@@ -178,31 +185,33 @@
             <th class="th">كمية</th>
           </tr>
         </thead>
-        {{#each salesLine}}
-        <tr class="tab-data" style="font-size: 13px !important;">
-          <td class="td">{{this.sNo}}</td>
-          <td class="td">
-            <div style="font-size: 13px;">
-              {{this.itemid}}
-            </div>
-          </td>
-          <td class="td description-data">
-            <span style="font-size: 13px;">
-              {{this.prodNameAr}},
-              {{this.configid}},
-              {{# if this.colorantid}}
-              {{this.colorantid}},
-              {{/if}}
-              {{this.inventsizeid}}
-            </span>
-          </td>
+        <tbody style="color: black;font-weight: bold;">
+          {{#each salesLine}}
+          <tr class="tab-data" style="font-size: 13px !important;">
+            <td class="td">{{this.sNo}}</td>
+            <td class="td">
+              <div style="font-size: 13px;">
+                {{this.itemid}}
+              </div>
+            </td>
+            <td class="td description-data">
+              <span style="font-size: 13px;">
+                {{this.prodNameAr}},
+                {{this.configid}},
+                {{# if this.colorantid}}
+                {{this.colorantid}},
+                {{/if}}
+                {{this.inventsizeid}}
+              </span>
+            </td>
 
-          <!-- <td class="td">{{deliveryDate}}</td> -->
-          <td class="td">
-            {{this.salesQty}}
-          </td>
-        </tr>
-        {{/each}}
+            <!-- <td class="td">{{deliveryDate}}</td> -->
+            <td class="td">
+              {{this.salesQty}}
+            </td>
+          </tr>
+          {{/each}}
+        </tbody>
       </table>
 
       <table width="100%" style="text-align: right; border-bottom: 1px dotted #8a8989; margin-top: 8px;">
@@ -216,23 +225,31 @@
         </tr>
       </table>
 
-      <table width="100%" style="background: #fff;">
-        <tr>
-          <td style="width: 33%; font-size: 15px; text-align: right;">
-            المستلم
-            <!-- receipt -->
-          </td>
-          <td style="width: 33%; font-size: 15px; text-align: center;">
-            البائع
-          </td>
-          <td style="width: 33%; font-size: 15px; text-align: left;">
-            الشركة
-          </td>
-        </tr>
-      </table>
+
     </td>
   </tr>
   </table>
+
+  <footer>
+    <div style="width:100%;height:50px;border-top: 1px dotted #8a8989;">
+
+    </div>
+    <table width="100%" style="background: #fff;">
+      <tr>
+        <td style="width: 33%; font-size: 15px; text-align: right;">
+          المستلم
+          <!-- receipt -->
+        </td>
+        <td style="width: 33%; font-size: 15px; text-align: center;">
+          البائع
+        </td>
+        <td style="width: 33%; font-size: 15px; text-align: left;">
+          الشركة
+        </td>
+      </tr>
+    </table>
+  </footer>
+
 </body>
 
 </html>

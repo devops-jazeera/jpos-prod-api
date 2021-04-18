@@ -1956,7 +1956,12 @@ var SalesTableService = /** @class */ (function () {
                         days = paymTerDays[0].numofdays;
                         now = new Date(App_1.App.DateNow());
                         dueDate = new Date(App_1.App.DateNow());
-                        dueDate.setDate(dueDate.getDate() + days);
+                        if (reqData.paymtermid == 'EM') {
+                            dueDate = new Date(dueDate.getFullYear(), dueDate.getMonth() + 1, 0);
+                        }
+                        else {
+                            dueDate.setDate(dueDate.getDate() + days);
+                        }
                         overDue = new Overdue_1.Overdue();
                         overDue.accountNum = reqData.custAccount;
                         overDue.payment = 0;

@@ -6,6 +6,13 @@
     <meta http-equiv="Content-Language" content="ar-sy" />
     <meta name="description" content="بيسب" />
     <style>
+        footer {
+      position: fixed;
+      bottom: 20px;
+      width: 100%;
+      text-align: center;
+    }
+
         body {
             font-family: ' Courier New', Courier, monospace !important;
             font-size: 11px;
@@ -195,6 +202,7 @@
                                 <th class="th" width="20%">Batch No</th>
                                 <th class="th" width="10%">Qty</th>
                         </thead>
+                        <tbody style="color: black;font-weight: bold;">
                         {{#each lines}}
                         <tr class="tab-data">
                             <td class="td">{{this.sNo}}</td>
@@ -221,11 +229,12 @@
                             </td>
                         </tr>
                         {{/each}}
+                        </tbody>
 
                     </table>
 
 
-                    <table width="100%" style="text-align:right; border-bottom:1px dotted #8a8989;margin-top: 8px;">
+                    <table width="100%" style="text-align:right; margin-top: 8px;">
 
                         <tr>
                             <td>&nbsp;</td>
@@ -239,25 +248,31 @@
                     </table>
 
 
-                    <table width="100%" style="background: #fff;">
-                        <tr>
-                            <td style="width:33%;font-size:15px; text-align: left;">
-                                Recipient
-                            </td>
-                            <td style="width:33%;font-size:15px; text-align: center;">
-                                Seller
-                            </td>
-                            <td style="width:33%;font-size:15px;text-align: right;">
-                                Company
-                            </td>
-                        </tr>
-                    </table>
+                   
 
                 </td>
             </tr>
         </table>
     </section>
     {{/each}}
+    <footer>
+        <div style="width:100%;height:50px;border-top: 1px dotted #8a8989;">
+
+        </div>
+        <table width="100%" style="background: #fff;">
+            <tr>
+                <td style="width:33%;font-size:15px; text-align: left;">
+                    Recipient
+                </td>
+                <td style="width:33%;font-size:15px; text-align: center;">
+                    Seller
+                </td>
+                <td style="width:33%;font-size:15px;text-align: right;">
+                    Company
+                </td>
+            </tr>
+        </table>
+    </footer>
 </body>
 
 </html>
