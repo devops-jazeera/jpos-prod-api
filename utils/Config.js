@@ -137,6 +137,11 @@ exports.setStagingConfig = function () {
         console.error(error);
     }
 };
+exports.SMS_NOIFICATION = {
+    url: "xxxxxxx",
+    auth: "xxxxxx"
+};
+
 exports.DbEnvConfig = function () { return __awaiter(_this, void 0, void 0, function () {
     var redeem, ecommerce, syncApi, token, testStoreIds, smsCred;
     return __generator(this, function (_a) {
@@ -159,6 +164,9 @@ exports.DbEnvConfig = function () { return __awaiter(_this, void 0, void 0, func
                 return [4 /*yield*/, RawQuery_1.RawQuery.ConstData("SMS")];
             case 6:
                 smsCred = _a.sent();
+                return [4 /*yield*/, RawQuery_1.RawQuery.ConstData("SMS_NOTIFICATION_IN_SYNC")];
+            case 7:
+                exports.SMS_NOIFICATION = _a.sent();
                 Props_1.Props.AXAPTA_URL = redeem.url;
                 Props_1.Props.REDEEM_URL = redeem.url + "Authenticate";
                 Props_1.Props.REDEEM_CLIENT_ID = redeem.username;
@@ -171,10 +179,10 @@ exports.DbEnvConfig = function () { return __awaiter(_this, void 0, void 0, func
                 Props_1.Props.SMS_USER = smsCred.user;
                 Props_1.Props.SMS_PASS = smsCred.pass;
                 return [4 /*yield*/, RawQuery_1.RawQuery.ConstData("MAIL")];
-            case 7:
+            case 8:
                 exports.mailOptions = _a.sent();
                 return [4 /*yield*/, RawQuery_1.RawQuery.ConstData("SALES_CHECK")];
-            case 8:
+            case 9:
                 exports.SALES_CHECK = _a.sent();
                 console.log(exports.SALES_CHECK);
                 return [2 /*return*/];
@@ -193,7 +201,7 @@ exports.SALES_CHECK = {
         "DESIGNERSERVICE",
         "DESIGNERSERVICERETURN",
     ],
-    POSTED: "select  transkind, count(1),  inventlocationid from salestable  where  and inventlocationid = 'XXXX-XXXX' and status in ( 'POSTED', 'PRINTED') and transkind in ( 'PACKINGSLIP', 'SALESORDER', 'INVENTORYMOVEMENT', 'RETURNORDER', 'ORDERRECEIVE', 'ORDERSHIPMENT', 'DESIGNERSERVICE', 'DESIGNERSERVICERETURN') and lastmodifieddate <= 'YYYY-MM-DDTHH:mm:SS' group by  transkind, inventlocationid order by  inventlocationid, transkind",
+    POSTED: "select  transkind, count(1),  inventlocationid from salestable  where  inventlocationid = 'XXXX-XXXX' and status in ( 'POSTED', 'PRINTED') and transkind in ( 'PACKINGSLIP', 'SALESORDER', 'INVENTORYMOVEMENT', 'RETURNORDER', 'ORDERRECEIVE', 'ORDERSHIPMENT', 'DESIGNERSERVICE', 'DESIGNERSERVICERETURN') and lastmodifieddate <= 'YYYY-MM-DDTHH:mm:SS' group by  transkind, inventlocationid order by  inventlocationid, transkind",
     NOT_POSTED: "select  transkind, count(1),  inventlocationid from salestable  where  inventlocationid = 'XXXX-XXXX' and status NOT in ( 'POSTED', 'PRINTED') and transkind in ( 'PACKINGSLIP', 'SALESORDER', 'INVENTORYMOVEMENT', 'RETURNORDER', 'ORDERRECEIVE', 'ORDERSHIPMENT', 'DESIGNERSERVICE', 'DESIGNERSERVICERETURN') and lastmodifieddate <= 'YYYY-MM-DDTHH:mm:SS' group by  transkind, inventlocationid order by  inventlocationid, transkind",
     SALES_LINES: "select  'LINES', count(s.status), s.inventlocationid from salesline sl inner join salestable s on sl.salesid = s.salesid where  s.inventlocationid = 'XXXX-XXXX' and s.status in ('POSTED', 'PRINTED') and s.transkind in ( 'PACKINGSLIP', 'SALESORDER', 'INVENTORYMOVEMENT', 'RETURNORDER', 'ORDERRECEIVE', 'ORDERSHIPMENT', 'DESIGNERSERVICE', 'DESIGNERSERVICERETURN') and s.lastmodifieddate <= 'YYYY-MM-DDTHH:mm:SS' group by  s.inventlocationid, s.transkind order by  s.inventlocationid",
 };

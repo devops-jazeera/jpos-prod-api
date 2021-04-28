@@ -363,7 +363,7 @@ var PhoneVerificationService = /** @class */ (function () {
                 }
                 catch (error) {
                     console.log(error);
-                    throw { status: 0, error: error };
+                    // throw { status: 0, error: error };
                 }
                 return [2 /*return*/];
             });
