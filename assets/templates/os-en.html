@@ -7,15 +7,15 @@
     <meta name="description" content="بيسب" />
     <style>
         footer {
-      position: fixed;
-      bottom: 20px;
-      width: 100%;
-      text-align: center;
-    }
+            position: fixed;
+            bottom: 20px;
+            width: 100%;
+            text-align: center;
+        }
 
         body {
             font-family: ' Courier New', Courier, monospace !important;
-            font-size: 11px;
+            font-size: 10px;
             width: 100%;
             background: #fff;
             padding: 0px;
@@ -30,7 +30,7 @@
         .td {
             background: hotpink;
             display: table-cell;
-            height: 8px;
+            height: 9px;
             width: 200px;
         }
 
@@ -40,7 +40,7 @@
             vertical-align: middle;
             border: 1px solid #c1c1c1;
             border-style: dotted;
-            padding: 10px;
+            padding:5px;
         }
 
         .inline-table {
@@ -54,7 +54,7 @@
             font-size: 20px;
             border: 1px solid #000;
             font-weight: 600;
-            padding: 10px;
+            padding: 9px;
             margin: 20px;
         }
 
@@ -66,7 +66,7 @@
             #headertbl {
                 width: 100%;
                 margin-top: 0px;
-                padding-top: 100px;
+                padding-top: 60px;
             }
 
             thead {
@@ -83,6 +83,10 @@
 
             body {
                 margin: 0;
+            }
+
+            @page {
+                margin: 1.6cm 0.5cm 7cm 0.5cm;
             }
         }
 
@@ -120,8 +124,8 @@
             <tr>
                 <td width="40%">
                     <table style="text-align:left;">
-                        <tr class="billing">
-                            <img src="{{qr}}" height="200" width="200">
+                        <tr >
+                            <img  src="{{qr}}" height="200" width="200">
                         </tr>
                     </table>
                 </td>
@@ -192,49 +196,63 @@
             </tr>
             <tr>
                 <td colspan="3">
-                    <table id="invoiceDetails" style="margin-top: 10px;" width="100%" class="item-table" cellpadding="0"
+                    <table id="invoiceDetails" style="margin-top: 10px;font-size: 10px;" width="100%" class="item-table" cellpadding="0"
                         cellspacing="0">
                         <thead>
                             <tr>
                                 <th class="th" width="10%">S.No</th>
-                                <th class="th" width="20%">Item No</th>
-                                <th class="th">Description</th>
-                                <th class="th" width="20%">Batch No</th>
+                                <th class="th" width="10%">Item No</th>
+                                <!-- <th class="th">Description</th> -->
+                                <th class="th" width="30%">Item Name</th>
+                                <th class="th" width="10%">Color</th>
+                                <th class="th" width="10%">Size</th>
+                                <th class="th" width="10%">Batch No</th>
                                 <th class="th" width="10%">Qty</th>
                         </thead>
-                        <tbody style="color: black;font-weight: bold;">
-                        {{#each lines}}
-                        <tr class="tab-data">
-                            <td class="td">{{this.sNo}}</td>
-                            <td class="td">
-                                <div style="font-size:12px">
-                                    {{this.itemid}}
-                                </div>
-                            </td>
-                            <td class="td description-data">
-                                <span style="font-size:12px">
-                                    {{this.prodNameEn}},
-                                    {{this.configid}},
-                                    {{#if this.colorantid}}
+                        <tbody style="color: black;font-weight: bold">
+                            {{#each lines}}
+                            <tr class="tab-data">
+                                <td class="td">{{this.sNo}}</td>
+                                <td class="td">
+                                    <div >
+                                        {{this.itemid}}
+                                    </div>
+                                </td>
+                                <!-- <td class="td ">
+                                    <span style="font-size:8px">
+                                        {{this.prodNameEn}},
+                                        {{this.configid}},
+                                        {{#if this.colorantid}}
+                                        {{this.colorantid}},
+                                        {{/if}}
+                                        {{this.inventsizeid}}
+                                    </span>
+                                </td> -->
+                                <td class="td" style="font-size:8px">
+                                    {{this.prodNameEn}}
+                                </td>
+                                <td class="td">
+                                    {{this.configid}}, {{#if this.colorantid}}
                                     {{this.colorantid}},
                                     {{/if}}
+                                </td>
+                                <td class="td">
                                     {{this.inventsizeid}}
-                                </span>
-                            </td>
-                            <td class="td">
-                                {{this.batchno}}
-                            </td>
-                            <td class="td">
-                                {{this.salesQty}}
-                            </td>
-                        </tr>
-                        {{/each}}
+                                </td>
+                                <td class="td">
+                                    {{this.batchno}}
+                                </td>
+                                <td class="td">
+                                    {{this.salesQty}}
+                                </td>
+                            </tr>
+                            {{/each}}
                         </tbody>
 
                     </table>
 
 
-                    <table width="100%" style="text-align:right; margin-top: 8px;">
+                    <table width="100%" style="text-align:right; margin-top: 9px;">
 
                         <tr>
                             <td>&nbsp;</td>
@@ -248,7 +266,7 @@
                     </table>
 
 
-                   
+
 
                 </td>
             </tr>

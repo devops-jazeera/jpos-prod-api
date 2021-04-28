@@ -371,6 +371,7 @@ var HistoricalTransactionReport = /** @class */ (function () {
                         return [2 /*return*/, data.data];
                     case 3:
                         e_1 = _a.sent();
+                        console.log(e_1);
                         throw { message: Props_1.Props.DATA_NOT_FOUND };
                     case 4: return [2 /*return*/];
                 }

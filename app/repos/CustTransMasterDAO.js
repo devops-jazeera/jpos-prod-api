@@ -119,6 +119,7 @@ var CustTransMasterDAO = /** @class */ (function () {
                         if (salesIds) {
                             query += "and salesid not in (" + salesIds + ")";
                         }
+                        console.log(query);
                         return [4 /*yield*/, this.db.query(query)];
                     case 4:
                         overDues = _a.sent();

@@ -297,11 +297,8 @@
         </tbody>
       </table>
 
-      <table width="100%" style="text-align:right; margin-top: 8px;">
-        <tr class="header">
-          <!-- <td style="width:50%;">
-          <table align="left"></table>
-        </td> -->
+     
+        
           <td style="width:50%; text-align: right;">
             <table id="gtotal" width="100%" style="text-align: right;">
               <!-- <tr class="billing" style="border-top: 1px solid black">
@@ -311,13 +308,21 @@
                                   {{grossAmount}}
                               </td>
                           </tr> -->
+                               <tr class="tdright">
+                    <td class="tdcenter" colspan="2"> طلب المبيعات</td>
+                    <td class="tdleft" colspan="1">المجموع الكلي</td>
+                    <td colspan="1">{{this.quantity}}</td>
+                    <td colspan="1">{{this.amount}}</td>
+                </tr>
               <tr class="tdright">
+                                    <!-- <td rowspan="4">&nbsp;</td> -->
+
                 <td class="tdright">مبلغ نقدي</td>
                 <td class="tdright">{{ cashAmount}}</td>
                 <td class="tdcenter borderNone"></td>
-                <td class="tdleft borderLeftNone">المجموع الكلي</td>
+                <td class="tdleft borderLeftNone">رسوم الشحن</td>
                 <td>
-                  {{grossAmount}}
+                  {{shippingAmount}}
                 </td>
               </tr>
               <!-- <tr class="billing">
@@ -331,9 +336,9 @@
                 <td class="tdright">مبلغ البطاقة</td>
                 <td class="tdright">{{ cardAmount }}</td>
                 <td class="tdcenter borderNone"></td>
-                <td class="tdleft borderLeftNone">الخصم</td>
+                <td class="tdleft borderLeftNone">خصم</td>
                 <td>
-                  {{discount}}
+                  {{disc}}
                 </td>
               </tr>
               <!-- <tr class="billing">
@@ -372,6 +377,10 @@
           </td>
         </tr>
       </table>
+      
+
+
+     
     </div>
    
 </body>

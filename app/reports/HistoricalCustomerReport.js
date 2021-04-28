@@ -74,6 +74,7 @@ var HistoricalCustomerReport = /** @class */ (function () {
                         return [4 /*yield*/, this.oldDataUrl(params)];
                     case 3:
                         olddata = _b.sent();
+                        if (!(olddata && olddata.length > 0)) return [3 /*break*/, 7];
                         salesTable = olddata && olddata.SalesTable.length > 0 ? olddata.SalesTable : [];
                         salesLines = olddata && olddata.SalesLine.length > 0 ? olddata.SalesLine : [];
                         console.log("++++++++++++++++++++++++++ salesTable ++++++++++++++++++++++++", salesTable.length);
@@ -143,6 +144,9 @@ var HistoricalCustomerReport = /** @class */ (function () {
                     case 7:
                         // let olddata = await this.oldDataUrl(params);
                         console.log("+++++++++++++++++++++++++Final Data+++++++++++++++++++++++++++++++++++++", data.length);
+                        if (data && data.length <= 0) {
+                            throw { message: Props_1.Props.DATA_NOT_FOUND };
+                        }
                         return [2 /*return*/, data];
                     case 8: throw { message: "Select custaccount ID" };
                     case 9: return [3 /*break*/, 11];
@@ -279,7 +283,7 @@ var HistoricalCustomerReport = /** @class */ (function () {
                     case 3:
                         e_1 = _a.sent();
                         console.log(e_1);
-                        throw { message: Props_1.Props.DATA_NOT_FOUND };
+                        return [2 /*return*/, []];
                     case 4: return [2 /*return*/];
                 }
             });
