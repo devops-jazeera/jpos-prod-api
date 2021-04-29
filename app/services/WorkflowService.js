@@ -596,7 +596,7 @@ var WorkflowService = /** @class */ (function () {
                         lines.map(function (v) {
                             items_1.push(v.itemid), colors_1.push(v.configid), sizes_1.push(v.inventsizeid), batches_1.push(v.batchno);
                         });
-                        return [4 /*yield*/, this.rawQuery.checkBatchAvailability(this.sessionInfo.inventlocationid, items_1, colors_1, sizes_1, batches_1)];
+                        return [4 /*yield*/, this.rawQuery.checkBatchAvailability(this.sessionInfo.inventlocationid, items_1, colors_1, sizes_1, batches_1, reqData.salesId)];
                     case 2:
                         itemsInStock_1 = _a.sent();
                         lines.map(function (v) {

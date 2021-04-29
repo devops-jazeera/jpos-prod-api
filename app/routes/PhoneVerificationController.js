@@ -116,7 +116,7 @@ var PhoneVerificationController = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 5, , 6]);
+                        _a.trys.push([0, 8, , 9]);
                         reqData = void 0;
                         result = null;
                         this.service.sessionInfo = request.body.sessionInfo;
@@ -124,21 +124,26 @@ var PhoneVerificationController = /** @class */ (function () {
                         reqData = request.body ? request.body.data : {};
                         return [4 /*yield*/, App_1.App.ValildateUserAccess(this.service.sessionInfo, this.moduleName(), Props_1.Props.ACCESS_WRITE)];
                     case 1:
-                        if (!_a.sent()) return [3 /*break*/, 3];
-                        return [4 /*yield*/, this.service.sendOtp(reqData)];
+                        if (!_a.sent()) return [3 /*break*/, 6];
+                        return [4 /*yield*/, App_1.App.checkInternet()];
                     case 2:
+                        if (!_a.sent()) return [3 /*break*/, 4];
+                        return [4 /*yield*/, this.service.sendOtp(reqData)];
+                    case 3:
                         result = _a.sent();
-                        return [3 /*break*/, 4];
-                    case 3: throw this.service.sessionInfo ? this.service.sessionInfo : { message: Props_1.Props.TOKEN_MESSAGE };
-                    case 4:
+                        return [3 /*break*/, 5];
+                    case 4: throw { message: "PLEASE_CHECK_YOUR_INTENET_CONNECTION" };
+                    case 5: return [3 /*break*/, 7];
+                    case 6: throw this.service.sessionInfo ? this.service.sessionInfo : { message: Props_1.Props.TOKEN_MESSAGE };
+                    case 7:
                         response.send({ status: 1, data: result });
-                        return [3 /*break*/, 6];
-                    case 5:
+                        return [3 /*break*/, 9];
+                    case 8:
                         error_3 = _a.sent();
                         console.log(error_3);
                         response.send({ status: 0, error: error_3 });
-                        return [3 /*break*/, 6];
-                    case 6: return [2 /*return*/];
+                        return [3 /*break*/, 9];
+                    case 9: return [2 /*return*/];
                 }
             });
         }); });

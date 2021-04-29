@@ -346,26 +346,31 @@ var PhoneVerificationService = /** @class */ (function () {
     };
     PhoneVerificationService.prototype.sendSMS = function (data) {
         return __awaiter(this, void 0, void 0, function () {
-            var url_1;
-            var _this = this;
+            var url, dat, error_9;
             return __generator(this, function (_a) {
-                try {
-                    url_1 = Config.SMS_NOIFICATION.url;
-                    this.axios.defaults.headers["Authorization"] = Config.SMS_NOIFICATION.auth;
-                    this.axios.defaults.headers["Content-Type"] = "application/json";
-                    return [2 /*return*/, new Promise(function (res, rej) {
-                            _this.axios.post(url_1, { data: data }).then(function (dat) {
-                                res(dat.data);
-                            }).catch(function (err) {
-                                throw err;
-                            });
-                        })];
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        url = Config.SMS_NOIFICATION.url;
+                        this.axios.defaults.headers["Authorization"] = Config.SMS_NOIFICATION.auth;
+                        this.axios.defaults.headers["Content-Type"] = "application/json";
+                        return [4 /*yield*/, this.axios.post(url, { data: data })];
+                    case 1:
+                        dat = _a.sent();
+                        // return new Promise((res, rej) => {
+                        //   this.axios.post(url, {data:data}).then((dat: any) => {
+                        //     res(dat.data)
+                        //   }).catch((err: any) => {
+                        //     throw err;
+                        //   })
+                        // });
+                        return [2 /*return*/, dat.data];
+                    case 2:
+                        error_9 = _a.sent();
+                        console.log(error_9);
+                        return [3 /*break*/, 3];
+                    case 3: return [2 /*return*/];
                 }
-                catch (error) {
-                    console.log(error);
-                    // throw { status: 0, error: error };
-                }
-                return [2 /*return*/];
             });
         });
     };
