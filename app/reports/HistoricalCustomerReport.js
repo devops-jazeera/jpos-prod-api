@@ -74,10 +74,10 @@ var HistoricalCustomerReport = /** @class */ (function () {
                         return [4 /*yield*/, this.oldDataUrl(params)];
                     case 3:
                         olddata = _b.sent();
-                        if (!(olddata && olddata.length > 0)) return [3 /*break*/, 7];
+                        if (!(olddata && olddata.SalesTable)) return [3 /*break*/, 7];
                         salesTable = olddata && olddata.SalesTable.length > 0 ? olddata.SalesTable : [];
                         salesLines = olddata && olddata.SalesLine.length > 0 ? olddata.SalesLine : [];
-                        console.log("++++++++++++++++++++++++++ salesTable ++++++++++++++++++++++++", salesTable.length);
+                        if (!(salesLines.length > 0)) return [3 /*break*/, 7];
                         newLines_1 = {};
                         salesLines.forEach(function (line) {
                             var newLine = {};
@@ -98,8 +98,10 @@ var HistoricalCustomerReport = /** @class */ (function () {
                             !newLines_1[newLine.salesId] ? newLines_1[newLine.salesId] = [] : null;
                             newLines_1[newLine.salesId].push(newLine);
                         });
+                        console.table(newLines_1.length);
                         inventLocationIds_1 = "";
                         lines_1 = Object.values(newLines_1);
+                        // console.log("lines==========================",lines)
                         lines_1.forEach(function (d, index) {
                             if (d.length > 0 && d[0].inventLocationId) {
                                 inventLocationIds_1 += "'" + d[0].inventLocationId + "'";
@@ -138,7 +140,7 @@ var HistoricalCustomerReport = /** @class */ (function () {
                             // console.log(object);
                             return object;
                         });
-                        // console.log("==================Before data================",data.length);
+                        // console.log("==================Before data================", data.length);
                         data.push.apply(data, newArr);
                         _b.label = 7;
                     case 7:
@@ -260,38 +262,46 @@ var HistoricalCustomerReport = /** @class */ (function () {
     };
     HistoricalCustomerReport.prototype.oldDataUrl = function (params) {
         return __awaiter(this, void 0, void 0, function () {
-            var token, url, data, e_1;
+            var url, reqData, data, error_2;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 3, , 4]);
-                        return [4 /*yield*/, this.getToken()];
+                        _a.trys.push([0, 2, , 3]);
+                        url = Props_1.Props._URL.split("axaptaorders")[0] + "historical/customer";
+                        axios.defaults.headers["Authorization"] = Props_1.Props._TOKEN;
+                        reqData = {
+                            data: {
+                                "custAccount": params.custaccount,
+                                "fromDate": params.fromDate,
+                                "toDate": params.toDate
+                            },
+                        };
+                        console.log(url, Props_1.Props._TOKEN, reqData);
+                        return [4 /*yield*/, axios.post(url, reqData)];
                     case 1:
-                        token = _a.sent();
-                        console.log(token);
-                        params.custaccount = params.custaccount ? params.custaccount.toUpperCase() : params.custaccount;
-                        url = Props_1.Props.AXAPTA_URL + ("HistoricalData?MobileNo=" + params.custaccount + "&fromDate=" + params.fromDate + "&toDate=" + params.toDate);
-                        axios.defaults.headers["Token"] = token;
-                        console.log(url);
-                        return [4 /*yield*/, axios.get(url)];
-                    case 2:
                         data = _a.sent();
-                        // console.log(data.data);
-                        // console.log("===========================================",data.data.lengt)
-                        // this.otpStore.set(params.mobile, { token: data.data.otp_token, validate: false });
-                        return [2 /*return*/, data.data];
-                    case 3:
-                        e_1 = _a.sent();
-                        console.log(e_1);
-                        return [2 /*return*/, []];
-                    case 4: return [2 /*return*/];
+                        data = data.data;
+                        if (data.error) {
+                            //   console.log(data.error)
+                            return [2 /*return*/, {}];
+                        }
+                        else {
+                            return [2 /*return*/, data.data];
+                        }
+                        return [3 /*break*/, 3];
+                    case 2:
+                        error_2 = _a.sent();
+                        // log.error(error);
+                        console.log(error_2);
+                        throw { status: 0, message: error_2 };
+                    case 3: return [2 /*return*/];
                 }
             });
         });
     };
     HistoricalCustomerReport.prototype.getToken = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var token, url, data, error_2;
+            var token, url, data, error_3;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -303,10 +313,11 @@ var HistoricalCustomerReport = /** @class */ (function () {
                     case 1:
                         data = _a.sent();
                         token = data.headers.token;
+                        console.log(data.headers.token);
                         return [2 /*return*/, token];
                     case 2:
-                        error_2 = _a.sent();
-                        throw error_2;
+                        error_3 = _a.sent();
+                        throw error_3;
                     case 3: return [2 /*return*/];
                 }
             });

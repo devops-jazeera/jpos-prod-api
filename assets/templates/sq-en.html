@@ -115,8 +115,11 @@
 
     table.dash td,
     table.dash th {
-      border: 1px dashed #cccccc;
-    }
+     text-align: center;
+     vertical-align: middle;
+     border: 1px solid #c1c1c1;
+     border-style: dotted;
+     padding: 4px;    }
   </style>
 </head>
 
@@ -225,7 +228,7 @@
       <div style="page-break-after: always;">
 
         <table class="dash" width="100%" cellpadding="0" cellspacing="0"
-          style="position: relative;top: 2px;font-size: 8px;">
+          style="position: relative;top: 2px;font-size: 10px;">
           <thead>
             <tr>
               <th class="th">S.No</th>
@@ -256,25 +259,42 @@
               <th class="th">Net Amnt after VAT</th>
             </tr>
           </thead>
-          <tbody style="color: black;font-weight: bold;">
+          <tbody style="color: black;">
             {{#each salesLine}}
 
             <tr class="tab-data">
               <td class="td">{{this.sNo}}</td>
               <td class="td">
-                {{this.itemid}}
-              </td>
+                            <div style="font-size:10px">
+                                {{this.itemid}}
+                            </div>
+                            </td>
               <td class="td description-data">
                 <span>
                   {{this.prodNameEn}}, {{# if this.colorant}} {{this.colorant}}, {{else}} {{this.configid}}, {{/if}}
                   {{this.inventsizeid}}, {{this.batchno}}
                 </span>
               </td>
-              <td class="td">{{this.salesQty}}</td>
-              <td class="td">{{this.salesprice}}</td>
-              <td class="td">{{this.colorantprice}}</td>
-              <td class="td">{{this.lineTotalDisc}}</td>
-              <td class="td">{{this.lineAmountBeforeVat}}</td>
+              <td class="td">
+                
+                {{this.salesQty}}
+              </td>
+              <td class="td">
+                
+                {{this.salesprice}}
+              </td>
+              <td class="td">
+                
+                {{this.colorantprice}}
+              </td>
+              <td class="td">
+                
+                {{this.lineTotalDisc}}
+              </td>
+              <td class="td">
+                
+                {{this.lineAmountBeforeVat}}
+              </td>
               <td class="td">
                 <table style="border-collapse: collapse; border: none !important; width: 100%">
                   <tr class="td inline-table">

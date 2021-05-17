@@ -68,6 +68,10 @@ var Inventorytrans = /** @class */ (function () {
         __metadata("design:type", Number)
     ], Inventorytrans.prototype, "costamountphysical", void 0);
     __decorate([
+        typeorm_1.Column({ name: "shippingdaterequested" }),
+        __metadata("design:type", Date)
+    ], Inventorytrans.prototype, "shippingDateRequested", void 0);
+    __decorate([
         typeorm_1.Column({ name: "inventtransid" }),
         __metadata("design:type", String)
     ], Inventorytrans.prototype, "inventtransid", void 0);

@@ -7,7 +7,7 @@ var CallSync = function () {
     try {
         syncService = new SyncService_1.SyncService("M");
         syncService = new SyncService_1.SyncService("T");
-        syncService = new SyncService_1.SyncService("F");
+        // syncService = new SyncService("F");
     }
     catch (err) {
         Log_1.ulog.error("SyncService D Error: ");

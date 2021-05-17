@@ -76,7 +76,7 @@ var GeneralJournalDAO = /** @class */ (function () {
             return __generator(this, function (_a) {
                 return [2 /*return*/, this.dao.find({
                         relations: ["legerJournalTras"],
-                        where: data,
+                        // where: data,
                         order: { lastModifiedDate: "DESC" },
                     })];
             });

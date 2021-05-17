@@ -83,7 +83,7 @@ var itemSalesByCustomerReport = /** @class */ (function () {
                             color: params.color,
                             product: params.product,
                             customerName: userData.nameEn ? userData.nameEn : "-",
-                            customerNameAr: userData.nameAr > 0 ? userData.nameAr : "-",
+                            customerNameAr: userData.nameAr ? userData.nameAr : "-",
                             totalQuantity: totalQuantity_1,
                             totalLineAmount: totalLineAmount_1.toFixed(2),
                             colorantPrice: colorantPrice_1.toFixed(2),

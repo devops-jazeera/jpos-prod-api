@@ -55,6 +55,7 @@ var typeorm_2 = require("typeorm");
 var Log_1 = require("../../utils/Log");
 var uuid_1 = __importDefault(require("uuid"));
 var UnSyncedTransactions_1 = require("../../entities/UnSyncedTransactions");
+var SalesLineDAO_1 = require("../repos/SalesLineDAO");
 var ENV_STORE_ID = process.env ? process.env.ENV_STORE_ID : null;
 var WorkflowService = /** @class */ (function () {
     function WorkflowService() {
@@ -66,10 +67,23 @@ var WorkflowService = /** @class */ (function () {
         this.updateInventoryService = new UpdateInventoryService_1.UpdateInventoryService();
         this.inventtransDAO = new InventTransDAO_1.InventorytransDAO();
         this.inventtransService = new InventtransService_1.InventtransService();
+        this.salesLineDAO = new SalesLineDAO_1.SalesLineDAO();
         this.db = typeorm_1.getManager();
         Watcher_1.DBEvent().on("workflow", function (value) {
             console.log("&&&&&&&&&&&&&&&&workflow watcher&&&&&&&&&&&&&&&&&&&: ", value);
             _this.workflowUpdate(value);
+        });
+        Watcher_1.DBEvent().on("salestable", function (value) {
+            console.log("&&&&&&&&&&&&&&&& salestable watcher &&&&&&&&&&&&&&&&&&&: ", value);
+            _this.updateSalestable(value);
+        });
+        Watcher_1.DBEvent().on("salesline", function (value) {
+            console.log("&&&&&&&&&&&&&&&& salesline watcher &&&&&&&&&&&&&&&&&&&: ", value);
+            _this.updateSalesLine(value);
+        });
+        Watcher_1.DBEvent().on("inventtrans", function (value) {
+            console.log("&&&&&&&&&&&&&&&& inventtrans watcher &&&&&&&&&&&&&&&&&&&: ", value);
+            _this.updateInventtrans(value);
         });
     }
     WorkflowService.prototype.entity = function (id) {
@@ -836,6 +850,66 @@ var WorkflowService = /** @class */ (function () {
                         Log_1.log.error(e_2);
                         return [3 /*break*/, 16];
                     case 16: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    WorkflowService.prototype.updateSalestable = function (data) {
+        return __awaiter(this, void 0, void 0, function () {
+            var updateData;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (!!data.shippingdaterequested) return [3 /*break*/, 2];
+                        updateData = {
+                            salesId: data.salesid,
+                            shippingDateRequested: new Date(App_1.App.DateNow())
+                        };
+                        return [4 /*yield*/, this.salesTableDAO.save(updateData)];
+                    case 1:
+                        _a.sent();
+                        _a.label = 2;
+                    case 2: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    WorkflowService.prototype.updateSalesLine = function (data) {
+        return __awaiter(this, void 0, void 0, function () {
+            var updateData;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (!!data.shippingdaterequested) return [3 /*break*/, 2];
+                        updateData = {
+                            id: data.id,
+                            shippingDateRequested: new Date(App_1.App.DateNow())
+                        };
+                        return [4 /*yield*/, this.salesLineDAO.save(updateData)];
+                    case 1:
+                        _a.sent();
+                        _a.label = 2;
+                    case 2: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    WorkflowService.prototype.updateInventtrans = function (data) {
+        return __awaiter(this, void 0, void 0, function () {
+            var updateData;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (!!data.shippingdaterequested) return [3 /*break*/, 2];
+                        updateData = {
+                            id: data.id,
+                            shippingDateRequested: new Date(App_1.App.DateNow())
+                        };
+                        return [4 /*yield*/, this.inventtransDAO.save(updateData)];
+                    case 1:
+                        _a.sent();
+                        _a.label = 2;
+                    case 2: return [2 /*return*/];
                 }
             });
         });

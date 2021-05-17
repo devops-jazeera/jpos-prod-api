@@ -116,8 +116,11 @@
 
     table.dash td,
     table.dash th {
-      border: 1px dashed #cccccc;
-    }
+     text-align: center;
+     vertical-align: middle;
+     border: 1px solid #c1c1c1;
+     border-style: dotted;
+     padding: 4px;     }
   </style>
 </head>
 
@@ -258,10 +261,10 @@
               <th class="th">المبلغ الكلي</th>
             </tr>
           </thead>
-          <tbody style="color: black;font-weight: bold;">
+          <tbody style="color: black;">
             {{#each salesLine}}
 
-            <tr class="tab-data" style="font-size: 8px !important">
+            <tr class="tab-data" style="font-size: 10px !important">
               <td class="td">{{this.sNo}}</td>
               <td class="td">
                 {{this.itemid}}

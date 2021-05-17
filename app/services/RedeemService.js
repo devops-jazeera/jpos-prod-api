@@ -46,30 +46,37 @@ var RedeemService = /** @class */ (function () {
     }
     RedeemService.prototype.getCustomerPoints = function (params) {
         return __awaiter(this, void 0, void 0, function () {
-            var token, url, data, redeemData, error_1;
+            var url, reqData, data, error_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 3, , 4]);
-                        return [4 /*yield*/, this.getToken()];
+                        _a.trys.push([0, 2, , 3]);
+                        url = Props_1.Props._URL + "getcustomerreedempoints";
+                        console.log("axpta url :  ", url);
+                        this.axios.defaults.headers["Authorization"] = Props_1.Props._TOKEN;
+                        console.log(this.axios.defaults.headers);
+                        reqData = {
+                            data: {
+                                mobile: params.mobile,
+                                inventLocationId: params.inventLocationId,
+                            },
+                        };
+                        return [4 /*yield*/, this.axios.post(url, reqData)];
                     case 1:
-                        token = _a.sent();
-                        url = Props_1.Props.AXAPTA_URL + ("CustomerPoints?mobileNum=" + params.mobile + "&inventLocationId=" + params.inventLocationId);
-                        console.log(url);
-                        this.axios.defaults.headers["Token"] = token;
-                        return [4 /*yield*/, this.axios.get(url)];
-                    case 2:
                         data = _a.sent();
-                        redeemData = data.data;
-                        if (redeemData && redeemData.BalancePoints < 0) {
-                            redeemData.BalancePoints = 0;
+                        console.log(Object.keys(data));
+                        data = data.data;
+                        if (data.error) {
+                            throw data.error.message;
                         }
-                        // await this.getOtp(params)
-                        return [2 /*return*/, redeemData];
-                    case 3:
+                        else {
+                            return [2 /*return*/, data.data];
+                        }
+                        return [3 /*break*/, 3];
+                    case 2:
                         error_1 = _a.sent();
-                        throw error_1;
-                    case 4: return [2 /*return*/];
+                        throw { status: 0, message: error_1 };
+                    case 3: return [2 /*return*/];
                 }
             });
         });
@@ -168,24 +175,32 @@ var RedeemService = /** @class */ (function () {
     };
     RedeemService.prototype.Redeem = function (reqData) {
         return __awaiter(this, void 0, void 0, function () {
-            var token, url, data, error_6;
+            var url, data, error_6;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 3, , 4]);
-                        return [4 /*yield*/, this.getToken()];
-                    case 1:
-                        token = _a.sent();
-                        url = Props_1.Props.AXAPTA_URL + "Redeem";
-                        this.axios.defaults.headers["Token"] = token;
+                        _a.trys.push([0, 2, , 3]);
+                        url = Props_1.Props._URL + "reedempoints";
+                        console.log("axpta url :  ", url);
+                        this.axios.defaults.headers["Authorization"] = Props_1.Props._TOKEN;
+                        console.log(this.axios.defaults.headers);
                         return [4 /*yield*/, this.axios.post(url, reqData)];
-                    case 2:
+                    case 1:
                         data = _a.sent();
-                        return [2 /*return*/, data.data];
-                    case 3:
+                        console.log(Object.keys(data));
+                        data = data.data;
+                        console.log(data.data);
+                        if (data.error) {
+                            throw data.error.message;
+                        }
+                        else {
+                            return [2 /*return*/, data.data];
+                        }
+                        return [3 /*break*/, 3];
+                    case 2:
                         error_6 = _a.sent();
-                        throw error_6;
-                    case 4: return [2 /*return*/];
+                        throw { status: 0, message: error_6 };
+                    case 3: return [2 /*return*/];
                 }
             });
         });

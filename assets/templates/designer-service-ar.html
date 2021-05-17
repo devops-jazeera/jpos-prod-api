@@ -246,7 +246,7 @@
         <tr class="tab-data">
           <td class="td">{{this.sNo}}</td>
           <td class="td">
-              <div style="font-size:13px">
+              <div style="font-size:10px">
                   {{this.itemid}}
               </div>
 
@@ -254,7 +254,7 @@
           </td>
           <td class="td description-data">
 
-              <span style="font-size:13px">
+              <span style="font-size:10px">
                   {{this.inventsizeid}}
               </span>
               <span>
@@ -319,8 +319,7 @@
 
                 <td class="tdright">مبلغ نقدي</td>
                 <td class="tdright">{{ cashAmount}}</td>
-                <td class="tdcenter borderNone"></td>
-                <td class="tdleft borderLeftNone">رسوم الشحن</td>
+                <td class="tdleft borderLeftNone" colspan="2">رسوم الشحن</td>
                 <td>
                   {{shippingAmount}}
                 </td>
@@ -335,8 +334,7 @@
               <tr class="tdright">
                 <td class="tdright">مبلغ البطاقة</td>
                 <td class="tdright">{{ cardAmount }}</td>
-                <td class="tdcenter borderNone"></td>
-                <td class="tdleft borderLeftNone">خصم</td>
+                <td class="tdleft borderLeftNone" colspan="2">خصم</td>
                 <td>
                   {{disc}}
                 </td>
@@ -351,8 +349,7 @@
               <tr class="tdright">
                 <td class="tdright">مبلغ خدمة تنسيق الوان</td>
                 <td class="tdright">{{ designServiceRedeemAmount }}</td>
-                <td class="tdcenter borderNone"></td>
-                <td class="tdleft borderLeftNone">ضريبة القيمة المضافة ({{this.vat}}%)</td>
+                <td class="tdleft borderLeftNone" colspan="2">ضريبة القيمة المضافة ({{this.vat}}%)</td>
                 <td>
                   {{vatAmount}}
                 </td>
@@ -367,8 +364,7 @@
               <tr class="tdright">
                 <td class="tdright">استرداد القيمة</td>
                 <td class="tdright">{{redeemAmount}}</td>
-                <td class="tdcenter borderNone"></td>
-                <td class="tdleft borderLeftNone">المبلغ الصافي</td>
+                <td class="tdleft borderLeftNone" colspan="2">المبلغ الصافي</td>
                 <td>
                   {{netAmount}}
                 </td>

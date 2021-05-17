@@ -35,53 +35,57 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var sms = require("mobily-sms");
-var Sms = /** @class */ (function () {
-    function Sms() {
-        // this.mobilySms = sms(Props.SMS_USER, Props.SMS_PASS);
+var typeorm_1 = require("typeorm");
+var RawQuery_1 = require("../common/RawQuery");
+var InventTransDAO_1 = require("../repos/InventTransDAO");
+var SalesTableDAO_1 = require("../repos/SalesTableDAO");
+var InventtransService_1 = require("./InventtransService");
+var SalesLine_1 = require("../../entities/SalesLine");
+var TriggerEventService = /** @class */ (function () {
+    function TriggerEventService() {
+        this.rawQuery = new RawQuery_1.RawQuery();
+        this.salesTableDAO = new SalesTableDAO_1.SalesTableDAO();
+        this.inventtransDAO = new InventTransDAO_1.InventorytransDAO();
+        this.inventtransService = new InventtransService_1.InventtransService();
+        this.salesline = new SalesLine_1.SalesLine();
+        this.db = typeorm_1.getManager();
+        //   DBEvent().on("salestable", (value: any) => {
+        //     console.log("&&&&&&&&&&&&&&&& salestable watcher &&&&&&&&&&&&&&&&&&&: ", value);
+        //     this.updateSalestable(value);
+        //   });
+        //   DBEvent().on("salesline", (value: any) => {
+        //     console.log("&&&&&&&&&&&&&&&& salesline watcher &&&&&&&&&&&&&&&&&&&: ", value);
+        //     this.updateSalesLine(value);
+        //   });
+        //   DBEvent().on("inventtrans", (value: any) => {
+        //     console.log("&&&&&&&&&&&&&&&& inventtrans watcher &&&&&&&&&&&&&&&&&&&: ", value);
+        //     this.updateInventtrans(value);
+        //   });
     }
-    Sms.prototype.execute = function (message, mobiles) {
+    TriggerEventService.prototype.updateSalestable = function (data) {
         return __awaiter(this, void 0, void 0, function () {
-            var _this = this;
             return __generator(this, function (_a) {
-                console.log("message : " + message);
-                console.log(mobiles);
-                return [2 /*return*/, new Promise(function (resolve, reject) {
-                        _this.mobilySms.sendSms(message, mobiles, "JazeraPaint", {}, function (error, data) {
-                            if (error) {
-                                console.log(error);
-                                reject(error);
-                            }
-                            else {
-                                console.log(data);
-                                resolve(data);
-                            }
-                        });
-                    })];
+                console.log("salestable", data);
+                return [2 /*return*/];
             });
         });
     };
-    Sms.prototype.sendMessage = function (countryCode, mobile, message) {
+    TriggerEventService.prototype.updateSalesLine = function (data) {
         return __awaiter(this, void 0, void 0, function () {
-            var phone, error_1;
             return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 2, , 3]);
-                        phone = mobile;
-                        phone = phone[0] == "0" ? phone.substring(1) : phone;
-                        phone = countryCode + phone;
-                        return [4 /*yield*/, this.execute(message, [phone])];
-                    case 1: return [2 /*return*/, _a.sent()];
-                    case 2:
-                        error_1 = _a.sent();
-                        console.error(error_1);
-                        return [2 /*return*/, null];
-                    case 3: return [2 /*return*/];
-                }
+                console.log("salesline", data);
+                return [2 /*return*/];
             });
         });
     };
-    return Sms;
+    TriggerEventService.prototype.updateInventtrans = function (data) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                console.log("inventrans", data);
+                return [2 /*return*/];
+            });
+        });
+    };
+    return TriggerEventService;
 }());
-exports.Sms = Sms;
+exports.TriggerEventService = TriggerEventService;

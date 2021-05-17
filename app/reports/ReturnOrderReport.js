@@ -212,7 +212,7 @@ var ReturnOrderReport = /** @class */ (function () {
                             var relatedItemIndex = salesLine.findIndex(function (v) {
                                 return v.linkId == item.link_id && parseFloat(v.lineAmount) * parseInt(v.salesQty) > parseFloat(item.linetotaldisc);
                             });
-                            if (relatedItem) {
+                            if (relatedItem && relatedItemIndex > -1) {
                                 console.log(salesLine[relatedItemIndex].lineTotalDisc, salesLine[relatedItemIndex].vatAmount, item.linetotaldisc, item.vatamount);
                                 salesLine[relatedItemIndex].lineTotalDisc = salesLine[relatedItemIndex].lineTotalDisc
                                     ? parseFloat(salesLine[relatedItemIndex].lineTotalDisc) + parseFloat(item.linetotaldisc)
@@ -223,7 +223,6 @@ var ReturnOrderReport = /** @class */ (function () {
                                 salesLine[relatedItemIndex].lineTotalDisc = salesLine[relatedItemIndex].lineTotalDisc.toFixed(2);
                                 salesLine[relatedItemIndex].vatAmount = salesLine[relatedItemIndex].vatAmount.toFixed(2);
                             }
-                            salesLine[relatedItemIndex].lineTotalDisc;
                         };
                         for (_a = 0, salesLineData_1 = salesLineData; _a < salesLineData_1.length; _a++) {
                             item = salesLineData_1[_a];
@@ -266,13 +265,13 @@ var ReturnOrderReport = /** @class */ (function () {
                             salesLine.vatAmount = data_1.vatAmount;
                             salesLine.cashAmount = data_1.cashAmount;
                             salesLine.cardAmount = data_1.cardAmount;
+                            salesLine.notes = data_1.notes;
                             salesLine.onlineAmount = data_1.onlineAmount;
                             salesLine.designServiceRedeemAmount = data_1.designServiceRedeemAmount;
                             salesLine.redeemAmount = data_1.redeemAmount;
                             salesLine.originalPrinted = data_1.originalPrinted;
                             salesLine.createdBy = data_1.createdBy;
                             salesLine.salesOrderId = data_1.salesOrderId;
-                            salesLine.notes = data_1.notes;
                             salesLine.wareHouseNameAr = data_1.wareHouseNameAr;
                             salesLine.wareHouseNameEn = data_1.wareHouseNameEn;
                             salesLine.salesman = data_1.salesman;

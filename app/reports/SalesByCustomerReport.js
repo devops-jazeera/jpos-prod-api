@@ -78,7 +78,7 @@ var SalesByCustomerReport = /** @class */ (function () {
                             result.headers.wname = rows[0].wname;
                             result.headers.fromDate = params.fromDate;
                             result.headers.toDate = params.toDate;
-                            result.headers.salesman = params.salesmanid ? rows[0].salesman : "ALL";
+                            result.headers.salesman = params.salesmanid ? params.salesmanid + "-" + rows[0].salesman : "ALL";
                             // result.headers.printtime = moment().format("HH:mm:ss");
                             // result.headers.printdate = moment().format("DD-MM-YY");
                         }
@@ -87,7 +87,7 @@ var SalesByCustomerReport = /** @class */ (function () {
                             // result.headers.wname = params.viewType;
                             result.headers.fromDate = params.fromDate;
                             result.headers.toDate = params.toDate;
-                            result.headers.salesman = params.salesmanid ? rows[0].salesman : "ALL";
+                            result.headers.salesman = params.salesmanid ? (rows.length > 0 ? rows[0].salesman : "-") : "ALL";
                             // result.headers.printtime = moment().format("HH:mm:ss");
                             // result.headers.printdate = moment().format("DD-MM-YY");
                         }
