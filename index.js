@@ -57,6 +57,7 @@ var http = require("http");
 var Store_1 = require("./utils/Store");
 var App_1 = require("./utils/App");
 var SysService_1 = require("./SysService");
+// import { PoolConnectionConfig } from "./utils/PoolConnectionConfig";
 var port = 5000;
 var ENV_STORE_ID = process.env ? process.env.ENV_STORE_ID : null;
 var count = 0;
@@ -148,6 +149,10 @@ var run = function () { return __awaiter(_this, void 0, void 0, function () {
                             lastSyncDate = null;
                             diff = null;
                             Store_1.StoreInIt();
+                            // let obj = await import('./utils/PoolConnectionConfig');
+                            //  SyncServiceHelper.setLocalPoolObj(obj.PoolConnectionConfig.LocalPool);
+                            //  SyncServiceHelper.setStagePoolObj(obj.PoolConnectionConfig.StagePool);
+                            //  SyncServiceHelper.setLayeredStagePoolObj(obj.PoolConnectionConfig.LayeredStagePool)
                             sync();
                         }
                     }
@@ -177,7 +182,7 @@ var run = function () { return __awaiter(_this, void 0, void 0, function () {
 }); };
 run();
 var sync = function () { return __awaiter(_this, void 0, void 0, function () {
-    var child_process, fs, syncFileUpdate, syncDFile, macAddress, _a, syncTFile, syncPFile, salesCheckFile, err_1;
+    var child_process, fs, syncFileUpdate, syncDFile, macAddress, _a, syncTFile, syncPFile, healthFile, salesCheckFile, err_1;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
@@ -211,6 +216,10 @@ var sync = function () { return __awaiter(_this, void 0, void 0, function () {
                 syncPFile = fs.existsSync(syncPFile) ? __dirname + "/syncP.ts" : __dirname + "/syncP.js";
                 child_process.fork(syncPFile);
                 Log_1.log.warn("syncP:", syncPFile);
+                healthFile = __dirname + "/InternetHealthCheck.ts";
+                healthFile = fs.existsSync(healthFile) ? __dirname + "/InternetHealthCheck.ts" : __dirname + "/InternetHealthCheck.js";
+                child_process.fork(healthFile);
+                Log_1.log.warn("InternetHealthCheck:", healthFile);
                 salesCheckFile = __dirname + "/salesCheck.ts";
                 salesCheckFile = fs.existsSync(salesCheckFile) ? __dirname + "/salesCheck.ts" : __dirname + "/salesCheck.js";
                 child_process.fork(salesCheckFile);

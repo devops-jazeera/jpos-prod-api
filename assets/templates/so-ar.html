@@ -457,7 +457,8 @@
 
                             <div class="table-border">
                                 <table class="" style="width:100%;margin:auto;border-collapse: collapse !important;">
-                                    <tr class="background" style="font-size:14px">
+                                    <thead>
+                                    <tr class="background" style="font-size:10px">
                                         <th class="th">رقم سري</th>
                                         <!-- <th class="th">Item No</th> -->
                                         <th class="th">وصف</th>
@@ -468,7 +469,27 @@
                                         <th class="th">سعر اللون </th>
                                         <th class="th">الضريبة</th>
                                         <th class="th">مجموع</th>
-                                    </tr>
+                <table style="border-collapse: collapse !important; border: none !important; width: 100%">
+                  <tr class="td">
+                    <td class="inline-table" style="
+                        border-collapse: collapse !important;
+                        border-top: none;
+                        border-left: none;
+                        border-right: none;
+                      ">
+                      Vat %
+                    </td>
+                  </tr>
+                  <tr class="">
+                    <td class="td" style="border-collapse: collapse !important; border: none !important">Amount</td>
+                  </tr>
+                </table>
+              </th>
+              <th class="th">Net Amnt after VAT</th>
+            </tr>
+          </thead>
+                              <tbody style="color: black; font-size: 10px;">
+
                                     {{#each salesLine}} 
 
                                     <tr class="tab-data">
@@ -541,10 +562,7 @@
                 </tr>
 
                 </tr>
-
-
-
-
+            </tbody>
 
         </table>
         <!-- <div > -->

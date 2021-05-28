@@ -69,8 +69,8 @@ exports.stageDbOptions = {
     database: "xxxx",
     max: 25,
     idleTimeoutMillis: 0,
+    slaves: ""
 };
-
 exports.syncStageDbOptions = {
     name: "syncstage",
     type: "postgres",
@@ -81,6 +81,7 @@ exports.syncStageDbOptions = {
     database: "xxxx",
     max: 25,
     idleTimeoutMillis: 0,
+    slaves: ""
 };
 exports.mailOptions = {
     host: "smtp.gmail.com",
@@ -122,12 +123,13 @@ exports.setStagingConfig = function () {
         var decodeData = CrpytoData_1.decrypt(JSON.parse(data));
         data = JSON.parse(decodeData);
         if (data) {
-            exports.stageDbOptions.host = data.host;
-            exports.stageDbOptions.port = data.port;
-            exports.stageDbOptions.username = data.username;
-            exports.stageDbOptions.database = data.database;
-            exports.stageDbOptions.password = data.password;
-            console.log(" \n\n Production DB set succesfully .... \n\n ");
+            exports.stageDbOptions.host = data.dbHost;
+                exports.stageDbOptions.port = data.dbPort;
+                exports.stageDbOptions.username = data.dbUser;
+                exports.stageDbOptions.database = data.dbDatabase;
+                exports.stageDbOptions.password = data.dbPassword;
+                exports.stageDbOptions.slaves = data.slaves;
+                console.log(" \n\n Production DB set succesfully .... \n\n ");
         }
     }
     catch (error) {
@@ -146,7 +148,8 @@ exports.setSyncStagingConfig = function () {
                 exports.syncStageDbOptions.username = data.dbUser;
                 exports.syncStageDbOptions.database = data.dbDatabase;
                 exports.syncStageDbOptions.password = data.dbPassword;
-                console.log(" \n\n Sync Production DB set succesfully .... \n\n ", exports.syncStageDbOptions);
+                exports.syncStageDbOptions.slaves = data.slaves;
+                console.log(" \n\n Sync Production DB set succesfully .... \n\n ");
             }
         }
     }
@@ -224,5 +227,5 @@ exports.getSyncDb = function () {
 };
 exports.getStageDb = function () {
     return exports.stageDbOptions;
-};
+}
 

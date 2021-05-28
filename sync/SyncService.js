@@ -176,6 +176,7 @@ var SyncService = /** @class */ (function () {
                         switch (_a.label) {
                             case 0:
                                 _a.trys.push([0, 7, , 8]);
+                                this.log.debug("--------- CRON MASTER STARTED ---------");
                                 if (!(isMasterProceed == true)) return [3 /*break*/, 5];
                                 isMasterProceed = false;
                                 this.log.debug("(((((((((( SYNC START MASTER))))))))))");
@@ -234,6 +235,7 @@ var SyncService = /** @class */ (function () {
                         switch (_a.label) {
                             case 0:
                                 _a.trys.push([0, 7, , 8]);
+                                this.log.debug("--------- CRON TRANSACTION STARTED ---------");
                                 if (!(isTranscationProceed == true)) return [3 /*break*/, 5];
                                 isTranscationProceed = false;
                                 this.log.debug("(((((((((( SYNC START TRANS ))))))))))");
@@ -293,6 +295,7 @@ var SyncService = /** @class */ (function () {
                         switch (_a.label) {
                             case 0:
                                 _a.trys.push([0, 7, , 8]);
+                                this.log.debug("--------- CRON PRIORITY1 STARTED ---------");
                                 toggleSync = toggleSync == "M" ? "T" : "M";
                                 if (!(isPriorityProceed == true)) return [3 /*break*/, 5];
                                 isPriorityProceed = false;
@@ -352,6 +355,7 @@ var SyncService = /** @class */ (function () {
                         switch (_a.label) {
                             case 0:
                                 _a.trys.push([0, 7, , 8]);
+                                this.log.debug("--------- CRON PRIORITY2 STARTED ---------");
                                 toggleSync = toggleSync == "M" ? "T" : "M";
                                 if (!(isPriorityProceed == true)) return [3 /*break*/, 5];
                                 isPriorityProceed = false;

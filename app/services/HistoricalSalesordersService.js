@@ -359,7 +359,7 @@ var HistoricalSalesordersService = /** @class */ (function () {
                                             });
                                         }
                                         if (!(line.multilndisc && line.multilndisc > 0)) return [3 /*break*/, 2];
-                                        MultiLineDiscRangesQuery = "SELECT itemrelation, ACCOUNTRELATION,QUANTITYAMOUNT,\n                                          CURRENCY,PERCENT1 FROM \n                                          PRICEDISCTABLE WHERE MODULE = 1 AND \n                                          ITEMCODE = 1 AND ACCOUNTCODE = 1 AND \n                                          ACCOUNTRELATION = '" + line.custAccount + "' AND LOWER(DATAAREAID) = LOWER('" + line.dataareaid + "') AND CURRENCY='" + line.currencyCode + "'";
+                                        MultiLineDiscRangesQuery = "SELECT itemrelation, ACCOUNTRELATION,quantityamountfrom, quantityamountto,\n                                          CURRENCY,PERCENT1 FROM \n                                          PRICEDISCTABLE WHERE MODULE = 1 AND \n                                          ITEMCODE = 1 AND ACCOUNTCODE = 1 AND \n                                          ACCOUNTRELATION = '" + line.custAccount + "' AND LOWER(DATAAREAID) = LOWER('" + line.dataareaid + "') AND CURRENCY='" + line.currencyCode + "'";
                                         return [4 /*yield*/, this_1.db.query(MultiLineDiscRangesQuery)];
                                     case 1:
                                         MultiLineDiscRanges = _a.sent();

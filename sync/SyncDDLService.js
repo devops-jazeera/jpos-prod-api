@@ -46,6 +46,7 @@ var Props_1 = require("../constants/Props");
 var SyncServiceHelper_1 = require("../sync/SyncServiceHelper");
 var SysService_1 = require("../SysService");
 var SyncService_1 = require("./SyncService");
+var PoolConnectionConfig_1 = require("../utils/PoolConnectionConfig");
 var moment = require("moment");
 var STAGING_ID = "STAGING";
 var STORE_ID = process.env.ENV_STORE_ID || "LOCAL";
@@ -56,7 +57,7 @@ var SyncDDLService = /** @class */ (function () {
     }
     SyncDDLService.prototype.execute = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var sync, currentTime, sql, layeredstageDb, syncResults, error_1;
+            var sync, currentTime, sql, layeredstageDbPool, syncResults, error_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -65,26 +66,28 @@ var SyncDDLService = /** @class */ (function () {
                         currentTime = new Date();
                         _a.label = 1;
                     case 1:
-                        _a.trys.push([1, 4, , 5]);
-                        layeredstageDb = SyncServiceHelper_1.SyncServiceHelper.LayeredStageDBOptions();
-                        sql = "select * from sync_source\n            where id='" + STORE_ID + "' \n            and (sync_ddl IS NOT NULL or is_reset = true or sync_cmd is not null)";
-                        return [4 /*yield*/, SyncServiceHelper_1.SyncServiceHelper.ExecuteQuery(layeredstageDb, sql, log)];
+                        _a.trys.push([1, 5, , 6]);
+                        return [4 /*yield*/, PoolConnectionConfig_1.PoolConnectionConfig];
                     case 2:
+                        layeredstageDbPool = (_a.sent()).LayeredStagePool;
+                        sql = "select * from sync_source\n            where id='" + STORE_ID + "' \n            and (sync_ddl IS NOT NULL or is_reset = true or sync_cmd is not null)";
+                        return [4 /*yield*/, SyncServiceHelper_1.SyncServiceHelper.ExecuteQuery(layeredstageDbPool, sql, log)];
+                    case 3:
                         syncResults = _a.sent();
                         syncResults = syncResults.rows;
                         syncResults = syncResults.length > 0 ? syncResults[0] : null;
                         if (!syncResults)
                             return [2 /*return*/, Promise.resolve("")];
                         return [4 /*yield*/, this.checkAndProceed(syncResults, currentTime)];
-                    case 3:
+                    case 4:
                         _a.sent();
                         log.info("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
-                        return [3 /*break*/, 5];
-                    case 4:
+                        return [3 /*break*/, 6];
+                    case 5:
                         error_1 = _a.sent();
                         log.error(error_1);
-                        return [3 /*break*/, 5];
-                    case 5: return [2 /*return*/];
+                        return [3 /*break*/, 6];
+                    case 6: return [2 /*return*/];
                 }
             });
         });
@@ -130,7 +133,7 @@ var SyncDDLService = /** @class */ (function () {
     };
     SyncDDLService.prototype.syncDDL = function (sync, currentTime) {
         return __awaiter(this, void 0, void 0, function () {
-            var e_1, _a, params, sql, layeredStageDb, stageDb, localDb, syncResults, syncResults_1, syncResults_1_1, res, err_1, syncDDLval, index, err_2, e_1_1, err_3;
+            var e_1, _a, params, sql, layeredStageDb, stageDb, localDb, layeredStageDbPool, stageDbPool, localDbPool, syncResults, syncResults_1, syncResults_1_1, res, err_1, syncDDLval, index, err_2, e_1_1, err_3;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
@@ -139,9 +142,18 @@ var SyncDDLService = /** @class */ (function () {
                         layeredStageDb = SyncServiceHelper_1.SyncServiceHelper.LayeredStageDBOptions();
                         stageDb = SyncServiceHelper_1.SyncServiceHelper.StageDBOptions();
                         localDb = SyncServiceHelper_1.SyncServiceHelper.LocalDBOptions();
-                        _b.label = 1;
+                        return [4 /*yield*/, PoolConnectionConfig_1.PoolConnectionConfig];
                     case 1:
-                        _b.trys.push([1, 24, , 25]);
+                        layeredStageDbPool = (_b.sent()).LayeredStagePool;
+                        return [4 /*yield*/, PoolConnectionConfig_1.PoolConnectionConfig];
+                    case 2:
+                        stageDbPool = (_b.sent()).StagePool;
+                        return [4 /*yield*/, PoolConnectionConfig_1.PoolConnectionConfig];
+                    case 3:
+                        localDbPool = (_b.sent()).LocalPool;
+                        _b.label = 4;
+                    case 4:
+                        _b.trys.push([4, 27, , 28]);
                         params = "";
                         sync.sync_ddl.map(function (ele) {
                             params = params + "'" + ele + "',";
@@ -149,39 +161,39 @@ var SyncDDLService = /** @class */ (function () {
                         if (params && params.length)
                             params = params.substring(0, params.length - 1);
                         sql = " SELECT id,summary FROM sync_ddl WHERE id IN (" + params + ")";
-                        return [4 /*yield*/, SyncServiceHelper_1.SyncServiceHelper.ExecuteQuery(layeredStageDb, sql, log)];
-                    case 2:
+                        return [4 /*yield*/, SyncServiceHelper_1.SyncServiceHelper.ExecuteQuery(layeredStageDbPool, sql, log)];
+                    case 5:
                         syncResults = _b.sent();
                         syncResults = syncResults.rows;
                         if (syncResults.length == 0)
                             throw Props_1.Props.RECORD_NOT_FOUND;
-                        _b.label = 3;
-                    case 3:
-                        _b.trys.push([3, 17, 18, 23]);
-                        syncResults_1 = __asyncValues(syncResults);
-                        _b.label = 4;
-                    case 4: return [4 /*yield*/, syncResults_1.next()];
-                    case 5:
-                        if (!(syncResults_1_1 = _b.sent(), !syncResults_1_1.done)) return [3 /*break*/, 16];
-                        res = syncResults_1_1.value;
                         _b.label = 6;
                     case 6:
-                        _b.trys.push([6, 13, , 15]);
+                        _b.trys.push([6, 20, 21, 26]);
+                        syncResults_1 = __asyncValues(syncResults);
                         _b.label = 7;
-                    case 7:
-                        _b.trys.push([7, 9, , 11]);
-                        return [4 /*yield*/, SyncServiceHelper_1.SyncServiceHelper.BatchQuery(localDb, [res.summary], log)];
+                    case 7: return [4 /*yield*/, syncResults_1.next()];
                     case 8:
-                        _b.sent();
-                        return [3 /*break*/, 11];
+                        if (!(syncResults_1_1 = _b.sent(), !syncResults_1_1.done)) return [3 /*break*/, 19];
+                        res = syncResults_1_1.value;
+                        _b.label = 9;
                     case 9:
+                        _b.trys.push([9, 16, , 18]);
+                        _b.label = 10;
+                    case 10:
+                        _b.trys.push([10, 12, , 14]);
+                        return [4 /*yield*/, SyncServiceHelper_1.SyncServiceHelper.BatchQueryunPool(localDbPool, [res.summary], log)];
+                    case 11:
+                        _b.sent();
+                        return [3 /*break*/, 14];
+                    case 12:
                         err_1 = _b.sent();
                         log.error(err_1);
                         return [4 /*yield*/, SyncServiceHelper_1.SyncServiceHelper.ErrorMessage("DDL", err_1, log)];
-                    case 10:
+                    case 13:
                         _b.sent();
-                        return [3 /*break*/, 11];
-                    case 11:
+                        return [3 /*break*/, 14];
+                    case 14:
                         syncDDLval = sync.sync_ddl;
                         index = syncDDLval.indexOf(res.id);
                         if (index > -1)
@@ -192,41 +204,41 @@ var SyncDDLService = /** @class */ (function () {
                         else {
                             sql = "UPDATE sync_source SET  sync_ddl= '{" + syncDDLval + "}' WHERE id='" + sync.id + "'";
                         }
-                        return [4 /*yield*/, SyncServiceHelper_1.SyncServiceHelper.BatchQuery(layeredStageDb, [sql], log)];
-                    case 12:
+                        return [4 /*yield*/, SyncServiceHelper_1.SyncServiceHelper.BatchQuery(layeredStageDbPool, [sql], log)];
+                    case 15:
                         _b.sent();
-                        return [3 /*break*/, 15];
-                    case 13:
+                        return [3 /*break*/, 18];
+                    case 16:
                         err_2 = _b.sent();
                         log.error(err_2);
                         return [4 /*yield*/, SyncServiceHelper_1.SyncServiceHelper.ErrorMessage("DDL", err_2, log)];
-                    case 14:
-                        _b.sent();
-                        return [3 /*break*/, 15];
-                    case 15: return [3 /*break*/, 4];
-                    case 16: return [3 /*break*/, 23];
                     case 17:
+                        _b.sent();
+                        return [3 /*break*/, 18];
+                    case 18: return [3 /*break*/, 7];
+                    case 19: return [3 /*break*/, 26];
+                    case 20:
                         e_1_1 = _b.sent();
                         e_1 = { error: e_1_1 };
-                        return [3 /*break*/, 23];
-                    case 18:
-                        _b.trys.push([18, , 21, 22]);
-                        if (!(syncResults_1_1 && !syncResults_1_1.done && (_a = syncResults_1.return))) return [3 /*break*/, 20];
-                        return [4 /*yield*/, _a.call(syncResults_1)];
-                    case 19:
-                        _b.sent();
-                        _b.label = 20;
-                    case 20: return [3 /*break*/, 22];
+                        return [3 /*break*/, 26];
                     case 21:
-                        if (e_1) throw e_1.error;
-                        return [7 /*endfinally*/];
-                    case 22: return [7 /*endfinally*/];
+                        _b.trys.push([21, , 24, 25]);
+                        if (!(syncResults_1_1 && !syncResults_1_1.done && (_a = syncResults_1.return))) return [3 /*break*/, 23];
+                        return [4 /*yield*/, _a.call(syncResults_1)];
+                    case 22:
+                        _b.sent();
+                        _b.label = 23;
                     case 23: return [3 /*break*/, 25];
                     case 24:
+                        if (e_1) throw e_1.error;
+                        return [7 /*endfinally*/];
+                    case 25: return [7 /*endfinally*/];
+                    case 26: return [3 /*break*/, 28];
+                    case 27:
                         err_3 = _b.sent();
                         log.error(err_3);
-                        return [3 /*break*/, 25];
-                    case 25: return [2 /*return*/];
+                        return [3 /*break*/, 28];
+                    case 28: return [2 /*return*/];
                 }
             });
         });

@@ -130,31 +130,31 @@
         <td valign="top" style="width: 50%;">
           <table align="right">
             <tr>
-              <td>اسم الشركة</td>
+              <td class="tdright textbold">اسم الشركة</td>
               <td>:</td>
-              <td>دهانات الجزيرة</td>
+              <td class="tdright textbold">دهانات الجزيرة</td>
             </tr>
             <tr class="billing">
-              <td>قطعة</td>
+              <td class="tdright textbold">قطعة</td>
               <td>:</td>
-              <td>1900</td>
+              <td class="tdright textbold">1900</td>
             </tr>
             <tr class="billing">
-              <td>منطقة</td>
+              <td class="tdright textbold">منطقة</td>
               <td>:</td>
               <td></td>
             </tr>
             <tr class="billing">
-              <td>هاتف</td>
+              <td class="tdright textbold">هاتف</td>
               <td>:</td>
-              <td>+96672211111</td>
+              <td class="tdright textbold">+96672211111</td>
             </tr>
           </table>
         </td>
         <td valign="top" style="width: 50%;">
           <table align="left">
             <tr>
-              <td>تاريخ</td>
+              <td class="textbold">تاريخ</td>
               <td>:</td>
               <td class="textbold">{{transDate}}</td>
             </tr>
@@ -164,14 +164,14 @@
     </table>
     <table width="100%">
       <tr>
-        <td width="15%">قاعة عرض:</td>
+        <td width="15%" class="textbold">قاعة عرض:</td>
         <td width="85%" class="textbold">{{wareHouseNameAr}}</td>
       </tr>
       <tr>
         <td colspan="2">&nbsp;</td>
       </tr>
       <tr>
-        <td class="tdleft" colspan="2">
+        <td class="tdleft textbold" colspan="2">
           رقم الإيصال:
           <span class="textbold">
             {{id}}
@@ -185,25 +185,25 @@
     <table class="dash" width="100%" cellpadding="0" cellspacing="0">
       <tr class="">
         <td class="tdright textbold" width="20%">مجموع</td>
-        <td class="tdright" width="20%">#{{amount}}#</td>
-        <td class="tdright" width="60%">{{wordar}}</td>
+        <td class="tdright textbold" width="20%">#{{amount}}#</td>
+        <td class="tdright textbold" width="60%">{{wordar}}</td>
       </tr>
       <tr class="">
         <td class="tdright textbold">العميل</td>
-        <td class="tdright">{{custid}}</td>
-        <td class="tdright">{{custnamear}}</td>
+        <td class="tdright textbold">{{custid}}</td>
+        <td class="tdright textbold">{{custnamear}}</td>
       </tr>
       {{#if isbank}}
       <tr class="">
         <td class="tdright textbold">تفاصيل البنك
 </td>
-        <td class="tdright">{{bankid}}</td>
-        <td class="tdright">{{banknamear}}</td>
+        <td class="tdright textbold">{{bankid}}</td>
+        <td class="tdright textbold">{{banknamear}}</td>
       </tr>
       {{/if}}
       <tr class="">
         <td class="tdright textbold">ملاحظات</td>
-        <td class="tdright" colspan="2">{{remarks}}</td>
+        <td class="tdright textbold" colspan="2">{{remarks}}</td>
       </tr>
     </table>
   </body>

@@ -457,6 +457,8 @@ var InventtransService = /** @class */ (function () {
                                         inventsizeid: v.inventsizeid,
                                         selectedQuantity: v.salesQty,
                                         availabilty: 0,
+                                        product: v.product,
+                                        name: v.name,
                                     });
                                 }
                             }

@@ -1064,7 +1064,7 @@ var RawQuery = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        query = "select\n        sum(i.qty) as availabilty\n        from inventtrans  i\n        where i.inventlocationid='" + data.inventlocationid + "'\n        and i.itemid = '" + data.itemid + "' and UPPER(i.configid)=UPPER('" + data.configid + "') and \n        UPPER(i.inventsizeid)=UPPER('" + data.inventsizeid + "') and i.batchno = '" + data.batchno + "' and transactionclosed = true \n        ";
+                        query = "select\n        sum(i.qty) as availabilty\n        from inventtrans  i\n        where i.inventlocationid='" + data.inventlocationid + "'\n        and i.itemid = '" + data.itemid + "' and UPPER(i.configid)=UPPER('" + data.configid + "') and \n        UPPER(i.inventsizeid)=UPPER('" + data.inventsizeid + "') and UPPER(i.batchno) = UPPER('" + data.batchno + "')\n         and transactionclosed = true \n        ";
                         if (data.invoiceid) {
                             query += " and i.invoiceid != '" + data.invoiceid + "' ";
                         }

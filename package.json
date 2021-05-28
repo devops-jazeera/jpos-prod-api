@@ -1,6 +1,6 @@
 {
   "name": "jpos-api",
-  "version": "1.0.39",
+  "version": "1.0.40",
   "main": "index.js",
   "scripts": {
     "start": "npm run build:live",
@@ -48,6 +48,7 @@
     "ono": "5.1.0",
     "pg": "7.10.0",
     "pg-format": "1.0.4",
+    "pg-replica": "^0.1.1",
     "puppeteer": "1.15.0",
     "qrcode": "1.4.4",
     "randomstring": "1.1.5",

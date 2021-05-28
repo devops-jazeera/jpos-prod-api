@@ -895,8 +895,17 @@ var SalesTableService = /** @class */ (function () {
                                     throw {
                                         status: 0,
                                         message: "INVALID_DATA",
-                                        issue: "one if the values for itemid or configId or inventsizeid are missing",
+                                        issue: "one of the values for itemid or configId or inventsizeid are missing",
                                     };
+                                }
+                                if (item.transkind == 'SALESORDER' || item.transkind == 'RETURNORDER') {
+                                    if (!element.vatamount || !element.vat) {
+                                        throw {
+                                            status: 0,
+                                            message: "INVALID_DATA",
+                                            issue: "vat amount not supplied for the line - " + (element.itemid + ":" + element.configId + ":" + element.inventsizeid),
+                                        };
+                                    }
                                 }
                             });
                         }
@@ -1711,7 +1720,7 @@ var SalesTableService = /** @class */ (function () {
                                         availability = parseInt(availability);
                                         similarLines.map(function (d) {
                                             d.batches.map(function (b) {
-                                                if (b.batchNo == batch.batchNo) {
+                                                if (b.batchNo.toLowerCase() == batch.batchNo.toLowerCase()) {
                                                     availability -= parseInt(b.quantity);
                                                 }
                                             });
@@ -3443,7 +3452,7 @@ var SalesTableService = /** @class */ (function () {
                                 similarLines.map(function (v) {
                                     if (v.batches) {
                                         v.batches.map(function (b) {
-                                            if (b.batchNo == batch.batchno) {
+                                            if (b.batchNo.toLowerCase() == batch.batchno.toLowerCase()) {
                                                 batch.availabilty -= parseInt(b.quantity);
                                             }
                                         });

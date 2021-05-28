@@ -259,13 +259,13 @@
               <th class="th">Net Amnt after VAT</th>
             </tr>
           </thead>
-          <tbody style="color: black;">
+          <tbody style="color: black; font-size: 10px;font-weight: bold;">
             {{#each salesLine}}
 
             <tr class="tab-data">
               <td class="td">{{this.sNo}}</td>
               <td class="td">
-                            <div style="font-size:10px">
+                            <div style="font-size:8px">
                                 {{this.itemid}}
                             </div>
                             </td>
@@ -324,22 +324,22 @@
                   <td width="18%" style="font-size: 8px; font-weight: 600">{{amount}} SAR</td>
                 </tr>
                 <tr class="billing">
-                  <td>Total Quantity</td>
+                  <td width="80%" style="font-size: 10px; font-weight: 600">Total Quantity</td>
                   <td>:</td>
                   <td style="font-size: 8px; font-weight: 600">{{quantity}}</td>
                 </tr>
                 <tr class="billing">
-                  <td>Discount</td>
+                  <td width="80%" style="font-size: 10px; font-weight: 600">Discount</td>
                   <td>:</td>
                   <td style="font-size: 8px; font-weight: 600">{{disc}} SAR</td>
                 </tr>
                 <tr class="billing">
-                  <td>VAT ({{this.vat}}%)</td>
+                  <td width="80%" style="font-size: 10px; font-weight: 600">VAT ({{this.vat}}%)</td>
                   <td>:</td>
                   <td style="font-size: 8px; font-weight: 600">{{vatamount}} SAR</td>
                 </tr>
                 <tr class="billing">
-                  <td>Net Amount</td>
+                  <td width="80%" style="font-size: 10px; font-weight: 600">Net Amount</td>
                   <td>:</td>
                   <td style="font-size: 8px; font-weight: 600">{{netAmount}} SAR</td>
                 </tr>
@@ -358,7 +358,7 @@
 </body>
 
 <footer>
-  <div style="width:100%;height:50px;border-top: 1px dotted #8a8989;">
+  <div style="width:100%;height:20px;border-top: 1px dotted #8a8989;">
 
   </div>
   <table width="100%" style="background: #fff">

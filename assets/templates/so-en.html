@@ -423,7 +423,8 @@
 
                             <div class="table-border">
                                 <table class="" style="width:100%;margin:auto;border-collapse: collapse !important;">
-                                    <tr class="background" style="font-size:14px">
+                                    <thead>
+                                    <tr class="background" style="font-size:10px;">
                                         <th class="th">S.No</th>
                                         <!-- <th class="th">Item No</th> -->
                                         <th class="th">Description</th>
@@ -434,7 +435,27 @@
                                         <th class="th">coloront Amt</th>
                                         <th class="th">Vat</th>
                                         <th class="th">Total</th>
-                                    </tr>
+                 <table style="border-collapse: collapse !important; border: none !important; width: 100%">
+                  <tr class="td">
+                    <td class="inline-table" style="
+                        border-collapse: collapse !important;
+                        border-top: none;
+                        border-left: none;
+                        border-right: none;
+                      ">
+                      Vat %
+                    </td>
+                  </tr>
+                  <tr class="">
+                    <td class="td" style="border-collapse: collapse !important; border: none !important">Amount</td>
+                  </tr>
+                </table>
+              </th>
+              <th class="th">Net Amnt after VAT</th>
+            </tr>
+          </thead>
+                    <tbody style="color: black; font-size: 10px;">
+
                                     {{#each salesLine}}
 
                                     <tr class="tab-data">
@@ -453,14 +474,11 @@
                                                 <tr>
 
                                                     <td style="text-align: left" align="left">
-                                                        <span style="font-weight:600;font-size:14px">
+                                                        <span style="font-weight:600;font-size:10px">
                                                             {{this.prodNameEn}}
                                                         </span>
                                                         <span>
-
                                                         </span>
-
-
                                                     </td>
                                                 </tr>
                                                 <tr class="desc-font">
@@ -499,23 +517,12 @@
                                         </td>
 
                                     </tr>
-
-
-
-
                                     {{/each}}
 
                 </tr>
-
-
                 </tr>
-
                 </tr>
-
-
-
-
-
+            </tbody>
         </table>
         <div>
             <!-- <h1

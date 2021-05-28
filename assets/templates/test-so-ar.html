@@ -337,7 +337,7 @@
     </table>
 
     <table class="dash" width="100%" cellpadding="0" cellspacing="0" style="position: relative; top: 2px">
-      <thead>
+      <thead style="font-size: 9px;">
         <tr>
           <th class="th">الرقم</th>
           <th class="th">رقم المنتج</th>
@@ -374,10 +374,10 @@
         {{#each lines}}
         <tr class="tab-data">
           <td class="tdcenter">{{this.sNo}}</td>
-          <td class="tdleft">
+          <td class="tdleft"  style="font-size: 8px">
             {{this.itemid}}
           </td>
-          <td class="td description-data">
+          <td class="td description-data"  style="font-size: 8px">
             <span>
               {{this.prodNameAr}}, {{# if this.colorant}} {{this.colorant}}, {{else}} {{this.configid}}, {{/if}}
               {{this.inventsizeid}}, {{this.batchno}}
@@ -433,10 +433,10 @@
         <td>{{this.disc}}</td>
       </tr>
       <tr class="tdright">
-        <td class="tdright" style="font-size: 13px">مبلغ خدمة تنسيق الوان</td>
+        <td class="tdright">مبلغ خدمة تنسيق الوان</td>
         <td class="tdright">{{ this.designServiceRedeemAmount }}</td>
         <td class="tdcenter borderNone"></td>
-        <td class="tdleft borderLeftNone" style="font-size: 13px">ضريبة القيمة المضافة ({{this.vat}}%)</td>
+        <td class="tdleft borderLeftNone">ضريبة القيمة المضافة ({{this.vat}}%)</td>
         <td>{{this.vatGrand}}</td>
       </tr>
       <tr class="tdright">
@@ -654,7 +654,7 @@
         {{/each}}
       </tbody>
     </table>
-    <table id="gtotal" class="textbold" align="left" width="100%" cellpadding="0" cellspacing="0">
+    <table id="gtotal" class="textbold" align="left" width="100%" cellpadding="0" cellspacing="0" style="font-size: 8px !important">
       <tr class="tdright">
         <td class="tdcenter" colspan="2">طلب المبيعات</td>
         <td class="tdleft" colspan="1">المجموع الكلي</td>

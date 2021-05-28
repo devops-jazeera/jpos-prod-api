@@ -126,36 +126,36 @@
 
     <table id="headertbl" width="100%" style="border-bottom: 1px solid #000000;">
       <tr>
-        <td valign="top" style="width: 50%;">
+        <td valign="top" style="width: 50%; ">
           <table align="left">
             <tr>
-              <td>Company Name</td>
+              <td class="tdleft textbold">Company Name</td>
               <td>:</td>
-              <td>Al Jazeera Paints</td>
+              <td class="tdleft textbold">Al Jazeera Paints</td>
             </tr>
             <tr class="billing">
-              <td>Plot</td>
+              <td class="tdleft textbold">Plot</td>
               <td>:</td>
-              <td>1900</td>
+              <td class="tdleft textbold">1900</td>
             </tr>
             <tr class="billing">
-              <td>Area</td>
+              <td class="tdleft textbold">Area</td>
               <td>:</td>
-              <td>Gachibowli, Hyderabad</td>
+              <td class="tdleft textbold">Gachibowli, Hyderabad</td>
             </tr>
             <tr class="billing">
-              <td>Phone</td>
+              <td class="tdleft textbold">Phone</td>
               <td>:</td>
-              <td>+966 7 221 1111</td>
+              <td class="tdleft textbold">+966 7 221 1111</td>
             </tr>
           </table>
         </td>
         <td valign="top" style="width: 50%;">
           <table align="right">
             <tr>
-              <td>Print Date</td>
+              <td class="tdright textbold">Print Date</td>
               <td>:</td>
-              <td>{{transDate}}</td>
+              <td class="tdright textbold">{{transDate}}</td>
             </tr>
           </table>
         </td>
@@ -163,14 +163,14 @@
     </table>
     <table width="100%">
       <tr>
-        <td width="5%">Showroom:</td>
+        <td width="5%" class="textbold">Showroom:</td>
         <td width="90%" class="textbold">{{wareHouseNameEn}}</td>
       </tr>
       <tr>
         <td colspan="2">&nbsp;</td>
       </tr>
       <tr>
-        <td align="right" colspan="2">Receipt No: <span class="textbold">{{id}}</span></td>
+        <td class="tdright textbold"  colspan="2">Receipt No: <span class="textbold">{{id}}</span></td>
       </tr>
       <tr>
         <td colspan="2">&nbsp;</td>
@@ -179,24 +179,24 @@
     <table class="dash" width="100%" cellpadding="0" cellspacing="0">
       <tr class="">
         <td class="tdleft textbold" width="20%">Total</td>
-        <td class="tdleft" width="20%">#{{amount}}#</td>
-        <td class="tdleft" width="60%">{{worden}}</td>
+        <td class="tdleft textbold" width="20%">#{{amount}}#</td>
+        <td class="tdleft textbold" width="60%">{{worden}}</td>
       </tr>
       <tr class="">
         <td class="tdleft textbold">Customer</td>
-        <td class="tdleft">{{custid}}</td>
-        <td class="tdleft">{{custnameen}}</td>
+        <td class="tdleft textbold">{{custid}}</td>
+        <td class="tdleft textbold">{{custnameen}}</td>
       </tr>
       {{#if isbank}}
       <tr class="">
         <td class="tdleft textbold">Bank</td>
-        <td class="tdleft">{{bankid}}</td>
-        <td class="tdleft">{{banknameen}}</td>
+        <td class="tdleft textbold">{{bankid}}</td>
+        <td class="tdleft textbold">{{banknameen}}</td>
       </tr>
       {{/if}}
       <tr class="">
         <td class="tdleft textbold">Remarks</td>
-        <td class="tdleft" colspan="2">{{remarks}}</td>
+        <td class="tdleft textbold" colspan="2">{{remarks}}</td>
       </tr>
     </table>
   </body>
