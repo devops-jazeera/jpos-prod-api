@@ -149,10 +149,6 @@ var run = function () { return __awaiter(_this, void 0, void 0, function () {
                             lastSyncDate = null;
                             diff = null;
                             Store_1.StoreInIt();
-                            // let obj = await import('./utils/PoolConnectionConfig');
-                            //  SyncServiceHelper.setLocalPoolObj(obj.PoolConnectionConfig.LocalPool);
-                            //  SyncServiceHelper.setStagePoolObj(obj.PoolConnectionConfig.StagePool);
-                            //  SyncServiceHelper.setLayeredStagePoolObj(obj.PoolConnectionConfig.LayeredStagePool)
                             sync();
                         }
                     }
@@ -182,7 +178,7 @@ var run = function () { return __awaiter(_this, void 0, void 0, function () {
 }); };
 run();
 var sync = function () { return __awaiter(_this, void 0, void 0, function () {
-    var child_process, fs, syncFileUpdate, syncDFile, macAddress, _a, syncTFile, syncPFile, healthFile, salesCheckFile, err_1;
+    var child_process, fs, syncFileUpdate, syncDFile, sysService, macAddress, _a, syncTFile, syncPFile, healthFile, salesCheckFile, err_1;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
@@ -196,12 +192,14 @@ var sync = function () { return __awaiter(_this, void 0, void 0, function () {
                 syncDFile = fs.existsSync(syncDFile) ? __dirname + "/syncD.ts" : __dirname + "/syncD.js";
                 child_process.fork(syncDFile);
                 Log_1.log.warn("syncDFile:", syncDFile);
+                console.log("===========================SysService==============================");
+                sysService = new SysService_1.SysService();
                 _a = {};
                 return [4 /*yield*/, App_1.App.getMacAddress()];
             case 1:
                 _a.systemAddress = _b.sent(),
                     _a.storeId = ENV_STORE_ID;
-                return [4 /*yield*/, SysService_1.SysService.SelectedMacAddress(ENV_STORE_ID, Log_1.log)];
+                return [4 /*yield*/, sysService.SelectedMacAddress(ENV_STORE_ID, Log_1.log)];
             case 2:
                 macAddress = (_a.selectAddress = _b.sent(),
                     _a);
@@ -273,7 +271,7 @@ process.on("uncaughtException", function (err) {
                     Log_1.log.error("ERROR-CODE :: " + errorObj.code);
                     Log_1.log.error("======== ERROR ======== ");
                     if (errorObj && errorObj.code == "57P03") {
-                        SysService_1.SysService.ResetService(Log_1.log);
+                        new SysService_1.SysService().ResetService(Log_1.log);
                     }
                 }
                 catch (error) {

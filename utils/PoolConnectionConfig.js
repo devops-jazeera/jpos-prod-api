@@ -39,10 +39,12 @@ var SyncServiceHelper_1 = require("../sync/SyncServiceHelper");
 var pg_1 = require("pg");
 var connectioObj = (function () {
     return __awaiter(this, void 0, void 0, function () {
-        var StagePool, LayeredStagePool, LocalPool;
+        var StagePool, LayeredStagePool, LocalPool, e_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, SyncServiceHelper_1.SyncServiceHelper.getStagePool()];
+                case 0:
+                    _a.trys.push([0, 4, , 5]);
+                    return [4 /*yield*/, SyncServiceHelper_1.SyncServiceHelper.getStagePool()];
                 case 1:
                     StagePool = _a.sent();
                     return [4 /*yield*/, SyncServiceHelper_1.SyncServiceHelper.getLayeredStagePool()];
@@ -57,6 +59,11 @@ var connectioObj = (function () {
                             LayeredStagePool: LayeredStagePool,
                             LocalPool: LocalPool
                         }];
+                case 4:
+                    e_1 = _a.sent();
+                    console.log("------------------error---------------------", e_1);
+                    return [3 /*break*/, 5];
+                case 5: return [2 /*return*/];
             }
         });
     });

@@ -41,6 +41,7 @@ var SysService_1 = require("./SysService");
 var dns = require("dns").promises;
 var cron = require("node-cron");
 var healthCount = 0;
+var sysService = new SysService_1.SysService();
 var checkInternet = function () { return __awaiter(_this, void 0, void 0, function () {
     return __generator(this, function (_a) {
         return [2 /*return*/, dns
@@ -70,7 +71,7 @@ cron.schedule('*/15 * * * *', function () { return __awaiter(_this, void 0, void
                     if (internet && restart) {
                         restart = false;
                         Log_1.internetlogs.info("**************************INTERNET CAME SERVICE RESTARTING PLEASE WAIT ......................... *******************");
-                        SysService_1.SysService.ResetService(Log_1.internetlogs);
+                        sysService.ResetService(Log_1.internetlogs);
                     }
                 }
                 return [3 /*break*/, 4];

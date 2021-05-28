@@ -1,11 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var Log_1 = require("./utils/Log");
+var SyncService_1 = require("./sync/SyncService");
 var SysService_1 = require("./SysService");
+var sysService = new SysService_1.SysService();
 var CallSync = function () {
     var syncService;
     try {
-        // syncService = new SyncService("D");
+        syncService = new SyncService_1.SyncService("D");
     }
     catch (err) {
         Log_1.hlog.error("SyncService D Error: ");
@@ -37,7 +39,7 @@ var healthCheck = function () {
         Log_1.hlog.error(error);
         if (healthCount > 2) {
             Log_1.hlog.error("system restarting ");
-            SysService_1.SysService.ResetService(Log_1.hlog);
+            sysService.ResetService(Log_1.hlog);
         }
     });
     req.end();

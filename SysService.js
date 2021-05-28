@@ -35,8 +35,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var SyncServiceHelper_1 = require("./sync/SyncServiceHelper");
 var App_1 = require("./utils/App");
+var SyncDDLService_1 = require("./sync/SyncDDLService");
 var syslogstr = "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~";
 var cmd = require("node-cmd");
 var cron = require("node-cron");
@@ -44,7 +44,7 @@ var execSync = require("child_process").execSync;
 var SysService = /** @class */ (function () {
     function SysService() {
     }
-    SysService.ResetService = function (log) {
+    SysService.prototype.ResetService = function (log) {
         return __awaiter(this, void 0, void 0, function () {
             var cmdData, err_1;
             return __generator(this, function (_a) {
@@ -54,7 +54,7 @@ var SysService = /** @class */ (function () {
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 3, , 4]);
-                        return [4 /*yield*/, SysService.CmdService("sc query  jpos-offline", log)];
+                        return [4 /*yield*/, this.CmdService("sc query  jpos-offline", log)];
                     case 2:
                         cmdData = _a.sent();
                         return [3 /*break*/, 4];
@@ -64,17 +64,17 @@ var SysService = /** @class */ (function () {
                         return [3 /*break*/, 4];
                     case 4:
                         if (!(cmdData && cmdData.includes("STOPPED"))) return [3 /*break*/, 7];
-                        return [4 /*yield*/, SysService.CmdService("net start jpos-offline", log)];
+                        return [4 /*yield*/, this.CmdService("net start jpos-offline", log)];
                     case 5:
                         _a.sent();
-                        return [4 /*yield*/, SysService.CmdService("net stop jpos-alt", log)];
+                        return [4 /*yield*/, this.CmdService("net stop jpos-alt", log)];
                     case 6:
                         _a.sent();
                         return [3 /*break*/, 10];
-                    case 7: return [4 /*yield*/, SysService.CmdService("net start jpos-alt", log)];
+                    case 7: return [4 /*yield*/, this.CmdService("net start jpos-alt", log)];
                     case 8:
                         _a.sent();
-                        return [4 /*yield*/, SysService.CmdService("net stop jpos-offline", log)];
+                        return [4 /*yield*/, this.CmdService("net stop jpos-offline", log)];
                     case 9:
                         _a.sent();
                         _a.label = 10;
@@ -83,7 +83,7 @@ var SysService = /** @class */ (function () {
             });
         });
     };
-    SysService.CmdService = function (cmdCall, log) {
+    SysService.prototype.CmdService = function (cmdCall, log) {
         return __awaiter(this, void 0, void 0, function () {
             var retValue, code;
             return __generator(this, function (_a) {
@@ -92,6 +92,8 @@ var SysService = /** @class */ (function () {
                 try {
                     log.warn(cmdCall);
                     code = execSync(cmdCall);
+                    log.info("((((((((((((((((((((((((((((((((CMD RUN COMPLETED)))))))))))))))))))))))))))))))))))))))");
+                    log.info(code);
                     if (code) {
                         retValue = code.toString();
                         log.warn(retValue);
@@ -109,13 +111,14 @@ var SysService = /** @class */ (function () {
                 finally {
                     log.warn(syslogstr);
                 }
+                log.info(Promise.resolve(retValue));
                 return [2 /*return*/, Promise.resolve(retValue)];
             });
         });
     };
-    SysService.SelectedMacAddress = function (storeid, log) {
+    SysService.prototype.SelectedMacAddress = function (storeid, log) {
         return __awaiter(this, void 0, void 0, function () {
-            var data, _a, err_2;
+            var syncDDLService, data, _a, syncDDLService_1, err_2;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
@@ -123,7 +126,8 @@ var SysService = /** @class */ (function () {
                         _b.label = 1;
                     case 1:
                         _b.trys.push([1, 8, 9, 10]);
-                        return [4 /*yield*/, SyncServiceHelper_1.SyncServiceHelper.StoreSource(storeid, log)];
+                        syncDDLService = new SyncDDLService_1.SyncDDLService(log);
+                        return [4 /*yield*/, syncDDLService.StoreSource(storeid, log)];
                     case 2:
                         data = _b.sent();
                         if (!data) return [3 /*break*/, 6];
@@ -132,7 +136,8 @@ var SysService = /** @class */ (function () {
                         return [4 /*yield*/, App_1.App.getMacAddress()];
                     case 3:
                         _a.mac_address = _b.sent();
-                        return [4 /*yield*/, SyncServiceHelper_1.SyncServiceHelper.UpdateCall("MAC", log, data.mac_address)];
+                        syncDDLService_1 = new SyncDDLService_1.SyncDDLService(log);
+                        return [4 /*yield*/, syncDDLService_1.UpdateCall("MAC", log, data.mac_address)];
                     case 4:
                         _b.sent();
                         _b.label = 5;
@@ -151,18 +156,19 @@ var SysService = /** @class */ (function () {
             });
         });
     };
-    SysService.UpdateVersion = function (log) {
+    SysService.prototype.UpdateVersion = function (log) {
         return __awaiter(this, void 0, void 0, function () {
-            var fs, data, err_3;
+            var fs, data, syncDDLService, err_3;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
                         fs = require("fs");
                         data = fs.readFileSync("./package.json", "utf8");
+                        syncDDLService = new SyncDDLService_1.SyncDDLService(log);
                         data = JSON.parse(data);
                         log.info("Version: " + data.version);
-                        return [4 /*yield*/, SyncServiceHelper_1.SyncServiceHelper.UpdateCall("VERSION", log, data.version)];
+                        return [4 /*yield*/, syncDDLService.UpdateCall("VERSION", log, data.version)];
                     case 1:
                         _a.sent();
                         return [3 /*break*/, 3];

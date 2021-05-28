@@ -545,54 +545,60 @@ var SyncServiceHelper = /** @class */ (function () {
     };
     SyncServiceHelper.getLayeredStagePool = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var layeredCongigDBOptions, db, slaves, master, slavesConfig;
+            var layeredCongigDBOptions_1, db, slaves, master, slavesConfig;
             return __generator(this, function (_a) {
-                layeredCongigDBOptions = SyncServiceHelper.LayeredStageDBOptions();
-                db = null;
-                slaves = layeredCongigDBOptions.slaves;
-                master = new pg_1.Pool(layeredCongigDBOptions);
-                if (slaves && slaves.length > 0) {
-                    delete layeredCongigDBOptions.slaves;
-                    slavesConfig = slaves.map(function (hostUrl) {
-                        var newReplicaConfig = __assign({}, layeredCongigDBOptions);
-                        newReplicaConfig.host = hostUrl;
-                        return new pg_1.Pool(newReplicaConfig);
+                try {
+                    layeredCongigDBOptions_1 = SyncServiceHelper.LayeredStageDBOptions();
+                    db = null;
+                    slaves = layeredCongigDBOptions_1.slaves;
+                    master = new pg_1.Pool(layeredCongigDBOptions_1);
+                    if (slaves && slaves.length > 0) {
+                        delete layeredCongigDBOptions_1.slaves;
+                        slavesConfig = slaves.map(function (hostUrl) {
+                            var newReplicaConfig = __assign({}, layeredCongigDBOptions_1);
+                            newReplicaConfig.host = hostUrl;
+                            return new pg_1.Pool(newReplicaConfig);
+                        });
+                        db = pg_replica_1.default(master, slavesConfig);
+                        console.log("replica created");
+                    }
+                    else {
+                        db = master;
+                        // db = new Client(layeredCongigDBOptions);
+                        // await db.connect();
+                    }
+                    console.log("--------------------------------connection stated layerd----------------------------------");
+                    db.on("connect", function () {
+                        console.log("*************(Connection happend in layered stage)!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                     });
-                    db = pg_replica_1.default(master, slavesConfig);
-                    console.log("replica created");
+                    db.on("error", function () {
+                        console.log("*************(Error happend in layered stage)!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                    });
+                    // await db.connect()
+                    // db.release=(await db.connect()).release;
+                    return [2 /*return*/, db];
                 }
-                else {
-                    db = master;
-                    // db = new Client(layeredCongigDBOptions);
-                    // await db.connect();
+                catch (error) {
                 }
-                console.log("--------------------------------connection stated layerd----------------------------------");
-                db.on("connect", function () {
-                    console.log("*************(Connection happend in layered stage)!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-                });
-                db.on("error", function () {
-                    console.log("*************(Error happend in layered stage)!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-                });
-                // await db.connect()
-                // db.release=(await db.connect()).release;
-                return [2 /*return*/, db];
+                return [2 /*return*/];
             });
         });
     };
     SyncServiceHelper.getStagePool = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var stageCongigDBOptions, db, slaves, master, slavesConfig;
+            var stageCongigDBOptions_1, db, slaves, master, slavesConfig, e_7;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        stageCongigDBOptions = SyncServiceHelper.StageDBOptions();
+                        _a.trys.push([0, 2, , 3]);
+                        stageCongigDBOptions_1 = SyncServiceHelper.StageDBOptions();
                         db = null;
-                        slaves = stageCongigDBOptions.slaves;
-                        master = new pg_1.Pool(stageCongigDBOptions);
+                        slaves = stageCongigDBOptions_1.slaves;
+                        master = new pg_1.Pool(stageCongigDBOptions_1);
                         if (slaves && slaves.length > 0) {
-                            delete stageCongigDBOptions.slaves;
+                            delete stageCongigDBOptions_1.slaves;
                             slavesConfig = slaves.map(function (hostUrl) {
-                                var newReplicaConfig = __assign({}, stageCongigDBOptions);
+                                var newReplicaConfig = __assign({}, stageCongigDBOptions_1);
                                 newReplicaConfig.host = hostUrl;
                                 return new pg_1.Pool(newReplicaConfig);
                             });
@@ -619,76 +625,55 @@ var SyncServiceHelper = /** @class */ (function () {
                         _a.sent();
                         //  db.release=(await db.connect()).release;
                         return [2 /*return*/, db];
-                }
-            });
-        });
-    };
-    SyncServiceHelper.UpdateCall = function (type, log, data) {
-        return __awaiter(this, void 0, void 0, function () {
-            var sql, layeredstageDb, layeredstageDbPool;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        sql = null;
-                        layeredstageDb = SyncServiceHelper.LayeredStageDBOptions();
-                        return [4 /*yield*/, SyncServiceHelper.LayeredStagePool];
-                    case 1:
-                        layeredstageDbPool = _a.sent();
-                        if (type == "RESET") {
-                            sql = "UPDATE sync_source SET  is_reset = false, updated_on = '" + moment().toISOString() + "'  WHERE id='" + STORE_ID + "' ";
-                        }
-                        else if (type == "CMD") {
-                            sql = data;
-                        }
-                        else if (type == "JSON") {
-                            sql = "UPDATE sync_source SET  sync_cmd = null, updated_on = '" + moment().toISOString() + "'  WHERE id='" + STORE_ID + "' ";
-                        }
-                        else if (type == "VERSION") {
-                            sql = "UPDATE sync_source SET  type = 'v" + data + "', updated_on = '" + moment().toISOString() + "'  WHERE id='" + STORE_ID + "' ";
-                        }
-                        else if (type == "MAC") {
-                            sql = "UPDATE sync_source SET  mac_address = '" + data + "', updated_on = '" + moment().toISOString() + "'  WHERE id='" + STORE_ID + "' ";
-                        }
-                        if (!sql) return [3 /*break*/, 3];
-                        return [4 /*yield*/, SyncServiceHelper.BatchQuery(layeredstageDbPool, [sql], log)];
                     case 2:
-                        _a.sent();
-                        _a.label = 3;
+                        e_7 = _a.sent();
+                        console.log(e_7);
+                        return [3 /*break*/, 3];
                     case 3: return [2 /*return*/];
                 }
             });
         });
     };
-    SyncServiceHelper.StoreSource = function (storeid, log) {
-        return __awaiter(this, void 0, void 0, function () {
-            var sql, layeredstageDbPool, stageDbPool, syncResults, error_1;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 4, , 5]);
-                        return [4 /*yield*/, SyncServiceHelper.LayeredStagePool];
-                    case 1:
-                        layeredstageDbPool = _a.sent();
-                        return [4 /*yield*/, SyncServiceHelper.StagePool];
-                    case 2:
-                        stageDbPool = _a.sent();
-                        sql = "select * from sync_source where id='" + storeid + "' ";
-                        log.info(sql);
-                        return [4 /*yield*/, SyncServiceHelper.ExecuteQuery(stageDbPool, sql, log)];
-                    case 3:
-                        syncResults = _a.sent();
-                        syncResults = syncResults.rows;
-                        syncResults = syncResults.length > 0 ? syncResults[0] : null;
-                        return [2 /*return*/, Promise.resolve(syncResults)];
-                    case 4:
-                        error_1 = _a.sent();
-                        log.error(error_1);
-                        return [3 /*break*/, 5];
-                    case 5: return [2 /*return*/];
-                }
-            });
-        });
-    };
+    // static async UpdateCall(type: string, log: any, data?: any) {
+    //   let sql = null;
+    //   let layeredstageDb = SyncServiceHelper.LayeredStageDBOptions();
+    //   let pool= (await PoolConnectionConfig);
+    //   if(pool&&pool.LayeredStagePool){
+    //     let layeredstageDbPool = (await PoolConnectionConfig).LayeredStagePool;
+    //     if (type == "RESET") {
+    //       sql = `UPDATE sync_source SET  is_reset = false, updated_on = '${moment().toISOString()}'  WHERE id='${STORE_ID}' `;
+    //     } else if (type == "CMD") {
+    //       sql = data;
+    //     } else if (type == "JSON") {
+    //       sql = `UPDATE sync_source SET  sync_cmd = null, updated_on = '${moment().toISOString()}'  WHERE id='${STORE_ID}' `;
+    //     } else if (type == "VERSION") {
+    //       sql = `UPDATE sync_source SET  type = 'v${data}', updated_on = '${moment().toISOString()}'  WHERE id='${STORE_ID}' `;
+    //     } else if (type == "MAC") {
+    //       sql = `UPDATE sync_source SET  mac_address = '${data}', updated_on = '${moment().toISOString()}'  WHERE id='${STORE_ID}' `;
+    //     }
+    //     if (sql) {
+    //       await SyncServiceHelper.BatchQueryunPool(layeredstageDbPool, [sql], log);
+    //     }
+    //   }
+    // }
+    // static async StoreSource(storeid: string, log: any) {
+    //   let sql: any;
+    //   try {
+    //     let layeredstageDbPool = await SyncServiceHelper.LayeredStagePool;
+    //     let stageDbPool = (await PoolConnectionConfig).StagePool;
+    //     if(stageDbPool){
+    //       sql = `select * from sync_source where id='${storeid}' `;
+    //       log.info(sql);
+    //       let syncResults: any = await SyncServiceHelper.ExecuteQuery(stageDbPool, sql, log);
+    //       syncResults = syncResults.rows;
+    //       syncResults = syncResults.length > 0 ? syncResults[0] : null;
+    //       return Promise.resolve(syncResults);
+    //     }
+    //   } catch (error) {
+    //     log.error(error);
+    //     // throw error;
+    //   }
+    // }
     /**
      *
      * @param type  "INSERT", "UPDATE", "SELECT"

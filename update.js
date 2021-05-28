@@ -5,6 +5,7 @@ var Store_1 = require("./utils/Store");
 var SysService_1 = require("./SysService");
 var cron = require("node-cron");
 var healthCount = 0;
+var sysService = new SysService_1.SysService();
 var UpdateSyncService = function () {
     try {
         var AutoUpdater = require("auto-updater");
@@ -63,7 +64,7 @@ var UpdateSyncService = function () {
         autoupdater.on("download.error", function (err) {
             Log_1.ulog.error("Error when downloading: " + err);
             setTimeout(function () {
-                SysService_1.SysService.ResetService(Log_1.ulog);
+                sysService.ResetService(Log_1.ulog);
             }, 60000);
         });
         autoupdater.on("end", function () {
@@ -100,7 +101,7 @@ var extratFolder = function () {
     var zip = new AdmZip(__dirname + "/" + fileName);
     zip.extractAllTo("../", true);
     fs.unlinkSync(__dirname + "/" + fileName);
-    SysService_1.SysService.ResetService(Log_1.ulog);
+    sysService.ResetService(Log_1.ulog);
 };
 // export var UpdateService = () => {
 //   cmd.get("sc query  jpos-offline", (err: any, data: any) => {
@@ -133,7 +134,7 @@ var main = function () {
     //     log.error(err);
     //   }
     // });
-    SysService_1.SysService.UpdateVersion(Log_1.ulog);
+    sysService.UpdateVersion(Log_1.ulog);
     Store_1.setItem("syncdate", new Date().toISOString(), "sync -> main");
     try {
         UpdateSyncService();
