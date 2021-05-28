@@ -38,12 +38,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var SyncDMLService_1 = require("./SyncDMLService");
 var SyncDDLService_1 = require("./SyncDDLService");
 var Log_1 = require("../utils/Log");
+var SyncServiceHelper_1 = require("./SyncServiceHelper");
 var SysService_1 = require("../SysService");
 var dns = require("dns").promises;
 var cron = require("node-cron");
 var cmd = require("node-cmd");
-var moment = require("moment");
-var STORE_ID = process.env.ENV_STORE_ID || "LOCAL";
 var SyncService = /** @class */ (function () {
     function SyncService(type) {
         switch (type) {
@@ -69,7 +68,6 @@ var SyncService = /** @class */ (function () {
                 break;
         }
         this.syncDMLService = new SyncDMLService_1.SyncDMLService(this.log);
-        this.sysService = new SysService_1.SysService();
         this.init(type);
         // this.log.log("debug", `&&&&&&&&&&&&&&&&&&&&&& ENV_STORE_ID : ${process.env.ENV_STORE_ID} &&&&&&&&&&&&&&&&&&&&&&`);
         // if (process.env.ENV_STORE_ID) {
@@ -114,11 +112,11 @@ var SyncService = /** @class */ (function () {
                 cron.schedule("0 0 0 * * *", function () { return __awaiter(_this, void 0, void 0, function () {
                     return __generator(this, function (_a) {
                         switch (_a.label) {
-                            case 0: return [4 /*yield*/, this.syncDDLService.UpdateCall("RESET", this.log)];
+                            case 0: return [4 /*yield*/, SyncServiceHelper_1.SyncServiceHelper.UpdateCall("RESET", this.log)];
                             case 1:
                                 _a.sent();
                                 this.log.warn("MID NIGHT RESET SERVER");
-                                return [4 /*yield*/, this.sysService.ResetService(this.log)];
+                                return [4 /*yield*/, SysService_1.SysService.ResetService(this.log)];
                             case 2:
                                 _a.sent();
                                 return [2 /*return*/];
@@ -152,7 +150,7 @@ var SyncService = /** @class */ (function () {
                                 this.log.error("--------- CRON DEFINE ERROR ---------");
                                 if (!(typeof error_1 == "string" && error_1 == "RESET")) return [3 /*break*/, 7];
                                 this.log.warn("HARD RESET SERVER");
-                                return [4 /*yield*/, this.sysService.ResetService(this.log)];
+                                return [4 /*yield*/, SysService_1.SysService.ResetService(this.log)];
                             case 6:
                                 _a.sent();
                                 _a.label = 7;
@@ -178,7 +176,6 @@ var SyncService = /** @class */ (function () {
                         switch (_a.label) {
                             case 0:
                                 _a.trys.push([0, 7, , 8]);
-                                this.log.debug("--------- CRON MASTER STARTED ---------");
                                 if (!(isMasterProceed == true)) return [3 /*break*/, 5];
                                 isMasterProceed = false;
                                 this.log.debug("(((((((((( SYNC START MASTER))))))))))");
@@ -237,7 +234,6 @@ var SyncService = /** @class */ (function () {
                         switch (_a.label) {
                             case 0:
                                 _a.trys.push([0, 7, , 8]);
-                                this.log.debug("--------- CRON TRANSACTION STARTED ---------");
                                 if (!(isTranscationProceed == true)) return [3 /*break*/, 5];
                                 isTranscationProceed = false;
                                 this.log.debug("(((((((((( SYNC START TRANS ))))))))))");
@@ -297,7 +293,6 @@ var SyncService = /** @class */ (function () {
                         switch (_a.label) {
                             case 0:
                                 _a.trys.push([0, 7, , 8]);
-                                this.log.debug("--------- CRON PRIORITY1 STARTED ---------");
                                 toggleSync = toggleSync == "M" ? "T" : "M";
                                 if (!(isPriorityProceed == true)) return [3 /*break*/, 5];
                                 isPriorityProceed = false;
@@ -357,7 +352,6 @@ var SyncService = /** @class */ (function () {
                         switch (_a.label) {
                             case 0:
                                 _a.trys.push([0, 7, , 8]);
-                                this.log.debug("--------- CRON PRIORITY2 STARTED ---------");
                                 toggleSync = toggleSync == "M" ? "T" : "M";
                                 if (!(isPriorityProceed == true)) return [3 /*break*/, 5];
                                 isPriorityProceed = false;
@@ -477,26 +471,25 @@ var SyncService = /** @class */ (function () {
             });
         });
     };
-    SyncService.prototype.CmdService = function (cmdObj, log) {
+    SyncService.CmdService = function (cmdObj, log) {
         return __awaiter(this, void 0, void 0, function () {
-            var cmdData, syncDDLService, _i, cmdData_1, ele;
+            var cmdData, _i, cmdData_1, ele;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         log.warn(JSON.stringify(cmdObj, null, 2));
                         cmdData = cmdObj.cmd ? cmdObj.cmd : null;
-                        syncDDLService = new SyncDDLService_1.SyncDDLService(log);
                         if (!cmdData) return [3 /*break*/, 12];
                         if (!(typeof cmdData == "string")) return [3 /*break*/, 5];
                         if (!(cmdData && cmdData.includes("npm"))) return [3 /*break*/, 4];
-                        return [4 /*yield*/, this.sysService.CmdService(cmdData, log)];
+                        return [4 /*yield*/, SysService_1.SysService.CmdService(cmdData, log)];
                     case 1:
                         _a.sent();
                         log.warn("cmd: " + cmdData);
-                        return [4 /*yield*/, syncDDLService.UpdateCall("JSON", log)];
+                        return [4 /*yield*/, SyncServiceHelper_1.SyncServiceHelper.UpdateCall("JSON", log)];
                     case 2:
                         _a.sent();
-                        return [4 /*yield*/, this.sysService.ResetService(log)];
+                        return [4 /*yield*/, SysService_1.SysService.ResetService(log)];
                     case 3:
                         _a.sent();
                         _a.label = 4;
@@ -509,7 +502,7 @@ var SyncService = /** @class */ (function () {
                         if (!(_i < cmdData_1.length)) return [3 /*break*/, 9];
                         ele = cmdData_1[_i];
                         if (!(ele && ele.includes("npm"))) return [3 /*break*/, 8];
-                        return [4 /*yield*/, this.sysService.CmdService(ele, log)];
+                        return [4 /*yield*/, SysService_1.SysService.CmdService(ele, log)];
                     case 7:
                         _a.sent();
                         log.warn("cmd: " + ele);
@@ -517,10 +510,10 @@ var SyncService = /** @class */ (function () {
                     case 8:
                         _i++;
                         return [3 /*break*/, 6];
-                    case 9: return [4 /*yield*/, syncDDLService.UpdateCall("JSON", log)];
+                    case 9: return [4 /*yield*/, SyncServiceHelper_1.SyncServiceHelper.UpdateCall("JSON", log)];
                     case 10:
                         _a.sent();
-                        return [4 /*yield*/, this.sysService.ResetService(log)];
+                        return [4 /*yield*/, SysService_1.SysService.ResetService(log)];
                     case 11:
                         _a.sent();
                         _a.label = 12;

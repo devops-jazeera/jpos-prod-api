@@ -57,7 +57,6 @@ var http = require("http");
 var Store_1 = require("./utils/Store");
 var App_1 = require("./utils/App");
 var SysService_1 = require("./SysService");
-// import { PoolConnectionConfig } from "./utils/PoolConnectionConfig";
 var port = 5000;
 var ENV_STORE_ID = process.env ? process.env.ENV_STORE_ID : null;
 var count = 0;
@@ -178,7 +177,7 @@ var run = function () { return __awaiter(_this, void 0, void 0, function () {
 }); };
 run();
 var sync = function () { return __awaiter(_this, void 0, void 0, function () {
-    var child_process, fs, syncFileUpdate, syncDFile, sysService, macAddress, _a, syncTFile, syncPFile, healthFile, salesCheckFile, err_1;
+    var child_process, fs, syncFileUpdate, syncDFile, macAddress, _a, syncTFile, syncPFile, salesCheckFile, err_1;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
@@ -192,14 +191,12 @@ var sync = function () { return __awaiter(_this, void 0, void 0, function () {
                 syncDFile = fs.existsSync(syncDFile) ? __dirname + "/syncD.ts" : __dirname + "/syncD.js";
                 child_process.fork(syncDFile);
                 Log_1.log.warn("syncDFile:", syncDFile);
-                console.log("===========================SysService==============================");
-                sysService = new SysService_1.SysService();
                 _a = {};
                 return [4 /*yield*/, App_1.App.getMacAddress()];
             case 1:
                 _a.systemAddress = _b.sent(),
                     _a.storeId = ENV_STORE_ID;
-                return [4 /*yield*/, sysService.SelectedMacAddress(ENV_STORE_ID, Log_1.log)];
+                return [4 /*yield*/, SysService_1.SysService.SelectedMacAddress(ENV_STORE_ID, Log_1.log)];
             case 2:
                 macAddress = (_a.selectAddress = _b.sent(),
                     _a);
@@ -214,10 +211,6 @@ var sync = function () { return __awaiter(_this, void 0, void 0, function () {
                 syncPFile = fs.existsSync(syncPFile) ? __dirname + "/syncP.ts" : __dirname + "/syncP.js";
                 child_process.fork(syncPFile);
                 Log_1.log.warn("syncP:", syncPFile);
-                healthFile = __dirname + "/InternetHealthCheck.ts";
-                healthFile = fs.existsSync(healthFile) ? __dirname + "/InternetHealthCheck.ts" : __dirname + "/InternetHealthCheck.js";
-                child_process.fork(healthFile);
-                Log_1.log.warn("InternetHealthCheck:", healthFile);
                 salesCheckFile = __dirname + "/salesCheck.ts";
                 salesCheckFile = fs.existsSync(salesCheckFile) ? __dirname + "/salesCheck.ts" : __dirname + "/salesCheck.js";
                 child_process.fork(salesCheckFile);
@@ -271,7 +264,7 @@ process.on("uncaughtException", function (err) {
                     Log_1.log.error("ERROR-CODE :: " + errorObj.code);
                     Log_1.log.error("======== ERROR ======== ");
                     if (errorObj && errorObj.code == "57P03") {
-                        new SysService_1.SysService().ResetService(Log_1.log);
+                        SysService_1.SysService.ResetService(Log_1.log);
                     }
                 }
                 catch (error) {

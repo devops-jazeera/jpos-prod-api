@@ -67,6 +67,7 @@ var pg_1 = require("pg");
 var Config = __importStar(require("../utils/Config"));
 var App_1 = require("../utils/App");
 var pg_replica_1 = __importDefault(require("pg-replica"));
+console.log("-------------------SyncServiceHelper staring-------------------------");
 Config.setEnvConfig();
 var format = require("pg-format");
 var STORE_ID = process.env.ENV_STORE_ID || "LOCAL";
@@ -80,186 +81,151 @@ var SyncServiceHelper = /** @class */ (function () {
     SyncServiceHelper.BatchQuery = function (config, sqls, log) {
         var sqls_1, sqls_1_1;
         return __awaiter(this, void 0, void 0, function () {
-            var e_1, _a, db, res, sql, e_1_1, e_2, err_1;
+            var e_1, _a, db, slaves, master, slavesConfig, res, sql, e_1_1, e_2, err_1;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
                         log.info("-------------- Batch Query Starts --------------");
                         log.debug("\tHost Query: " + config.host);
                         log.debug("\t\tBatch length: " + sqls.length);
-                        db = new pg_1.Client(config);
+                        db = null;
                         _b.label = 1;
                     case 1:
-                        _b.trys.push([1, 18, 23, 24]);
+                        _b.trys.push([1, 20, 25, 26]);
                         log.debug(" trying to Connect Database  ");
-                        return [4 /*yield*/, db.connect()];
+                        if (!(config.slaves && config.slaves.length > 0)) return [3 /*break*/, 2];
+                        slaves = config.slaves;
+                        delete config.slaves;
+                        log.info("\t Connection REelica Started");
+                        master = new pg_1.Pool(config);
+                        slavesConfig = slaves.map(function (hostUrl) {
+                            var slaveConfig = __assign({}, config, { host: hostUrl });
+                            // console.log(config.host)
+                            return new pg_1.Pool(slaveConfig);
+                        });
+                        // console.log(slaves)
+                        db = pg_replica_1.default(master, slavesConfig);
+                        return [3 /*break*/, 4];
                     case 2:
-                        _b.sent();
-                        log.debug(" Connected to Database  ");
-                        res = null;
-                        return [4 /*yield*/, db.query("BEGIN")];
+                        db = new pg_1.Client(config);
+                        return [4 /*yield*/, db.connect()];
                     case 3:
                         _b.sent();
                         _b.label = 4;
                     case 4:
-                        _b.trys.push([4, 10, 11, 16]);
-                        sqls_1 = __asyncValues(sqls);
-                        _b.label = 5;
-                    case 5: return [4 /*yield*/, sqls_1.next()];
+                        // await db.connect();
+                        log.debug(" Connected to Database  ");
+                        res = null;
+                        return [4 /*yield*/, db.query("BEGIN")];
+                    case 5:
+                        _b.sent();
+                        _b.label = 6;
                     case 6:
-                        if (!(sqls_1_1 = _b.sent(), !sqls_1_1.done)) return [3 /*break*/, 9];
+                        _b.trys.push([6, 12, 13, 18]);
+                        sqls_1 = __asyncValues(sqls);
+                        _b.label = 7;
+                    case 7: return [4 /*yield*/, sqls_1.next()];
+                    case 8:
+                        if (!(sqls_1_1 = _b.sent(), !sqls_1_1.done)) return [3 /*break*/, 11];
                         sql = sqls_1_1.value;
                         log.debug("Query Execution Started  ");
                         return [4 /*yield*/, db.query(sql)];
-                    case 7:
+                    case 9:
                         res = _b.sent();
                         log.debug(" Query executed  ");
-                        _b.label = 8;
-                    case 8: return [3 /*break*/, 5];
-                    case 9: return [3 /*break*/, 16];
-                    case 10:
+                        _b.label = 10;
+                    case 10: return [3 /*break*/, 7];
+                    case 11: return [3 /*break*/, 18];
+                    case 12:
                         e_1_1 = _b.sent();
                         e_1 = { error: e_1_1 };
-                        return [3 /*break*/, 16];
-                    case 11:
-                        _b.trys.push([11, , 14, 15]);
-                        if (!(sqls_1_1 && !sqls_1_1.done && (_a = sqls_1.return))) return [3 /*break*/, 13];
+                        return [3 /*break*/, 18];
+                    case 13:
+                        _b.trys.push([13, , 16, 17]);
+                        if (!(sqls_1_1 && !sqls_1_1.done && (_a = sqls_1.return))) return [3 /*break*/, 15];
                         return [4 /*yield*/, _a.call(sqls_1)];
-                    case 12:
-                        _b.sent();
-                        _b.label = 13;
-                    case 13: return [3 /*break*/, 15];
                     case 14:
+                        _b.sent();
+                        _b.label = 15;
+                    case 15: return [3 /*break*/, 17];
+                    case 16:
                         if (e_1) throw e_1.error;
                         return [7 /*endfinally*/];
-                    case 15: return [7 /*endfinally*/];
-                    case 16:
+                    case 17: return [7 /*endfinally*/];
+                    case 18:
                         log.info("END");
                         return [4 /*yield*/, db.query("COMMIT")];
-                    case 17:
+                    case 19:
                         _b.sent();
-                        return [3 /*break*/, 24];
-                    case 18:
+                        return [3 /*break*/, 26];
+                    case 20:
                         e_2 = _b.sent();
                         log.error(e_2);
-                        _b.label = 19;
-                    case 19:
-                        _b.trys.push([19, 21, , 22]);
-                        return [4 /*yield*/, db.query("ROLLBACK")];
-                    case 20:
-                        _b.sent();
-                        return [3 /*break*/, 22];
+                        _b.label = 21;
                     case 21:
-                        err_1 = _b.sent();
-                        log.error(err_1);
-                        return [3 /*break*/, 22];
+                        _b.trys.push([21, 23, , 24]);
+                        return [4 /*yield*/, db.query("ROLLBACK")];
                     case 22:
-                        log.error(e_2);
+                        _b.sent();
                         return [3 /*break*/, 24];
                     case 23:
+                        err_1 = _b.sent();
+                        log.error(err_1);
+                        return [3 /*break*/, 24];
+                    case 24:
+                        log.error(e_2);
+                        return [3 /*break*/, 26];
+                    case 25:
                         try {
-                            // db.end();
+                            db.end();
                         }
                         catch (err) {
                             log.error(err);
                             // throw err;
                         }
                         return [7 /*endfinally*/];
-                    case 24:
+                    case 26:
                         log.info("-------------- Batch Query Ends --------------");
                         return [2 /*return*/];
                 }
             });
         });
     };
-    SyncServiceHelper.BatchQueryunPool = function (config, sqls, log) {
-        var sqls_2, sqls_2_1;
+    // static async ExecuteQuery(config: any, sql: string, log: any) {
+    //   let showLog: boolean = !(sql.includes("DISTINCT") || sql.includes("sync_table") || sql.includes("sync_source"));
+    //   //let showLog = true;
+    //   if (showLog) log.info("----------------- Query Starts----------------------------");
+    //   //let db: PoolClient = null;
+    //   if (showLog) log.info("\tHost Query: " + config.host);
+    //   if (showLog) log.debug(sql);
+    //   let res = null;
+    //   const db = new Client(config);
+    //   try {
+    //     await db.connect();
+    //     // db =
+    //     //   config.host.indexOf("localhost") != -1
+    //     //     ? await SyncServiceHelper.LocalPool.connect()
+    //     //     : await SyncServiceHelper.StagePool.connect();
+    //     res = await db.query(sql);
+    //     //console.log(res.rows);
+    //     return { metaData: res.fields, rows: res.rows };
+    //   } catch (e) {
+    //     log.error(e);
+    //     // throw e;
+    //   } finally {
+    //     //if (db) db.release();
+    //     try {
+    //       db.end();
+    //     } catch (err) {
+    //       log.error(err);
+    //       // throw err;
+    //     }
+    //     if (showLog) log.info("----------------- Query Ends----------------------------");
+    //   }
+    // }
+    SyncServiceHelper.ExecuteQuery = function (config, sql, log) {
         return __awaiter(this, void 0, void 0, function () {
-            var e_3, _a, db, client, res, sql, e_3_1, e_4, err_2;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
-                    case 0:
-                        log.info("-------------- Batch Query Starts --------------");
-                        log.debug("\tHost Query: " + config.host);
-                        log.debug("\t\tBatch length: " + sqls.length);
-                        db = config;
-                        client = null;
-                        _b.label = 1;
-                    case 1:
-                        _b.trys.push([1, 17, 22, 23]);
-                        // log.debug(" trying to Connect Database  ");
-                        client = db; //await db.connect();
-                        res = null;
-                        return [4 /*yield*/, client.query("BEGIN")];
-                    case 2:
-                        _b.sent();
-                        _b.label = 3;
-                    case 3:
-                        _b.trys.push([3, 9, 10, 15]);
-                        sqls_2 = __asyncValues(sqls);
-                        _b.label = 4;
-                    case 4: return [4 /*yield*/, sqls_2.next()];
-                    case 5:
-                        if (!(sqls_2_1 = _b.sent(), !sqls_2_1.done)) return [3 /*break*/, 8];
-                        sql = sqls_2_1.value;
-                        log.debug("Query Execution Started  ");
-                        return [4 /*yield*/, client.query(sql)];
-                    case 6:
-                        res = _b.sent();
-                        log.debug(" Query executed  ");
-                        _b.label = 7;
-                    case 7: return [3 /*break*/, 4];
-                    case 8: return [3 /*break*/, 15];
-                    case 9:
-                        e_3_1 = _b.sent();
-                        e_3 = { error: e_3_1 };
-                        return [3 /*break*/, 15];
-                    case 10:
-                        _b.trys.push([10, , 13, 14]);
-                        if (!(sqls_2_1 && !sqls_2_1.done && (_a = sqls_2.return))) return [3 /*break*/, 12];
-                        return [4 /*yield*/, _a.call(sqls_2)];
-                    case 11:
-                        _b.sent();
-                        _b.label = 12;
-                    case 12: return [3 /*break*/, 14];
-                    case 13:
-                        if (e_3) throw e_3.error;
-                        return [7 /*endfinally*/];
-                    case 14: return [7 /*endfinally*/];
-                    case 15:
-                        log.info("END");
-                        return [4 /*yield*/, client.query("COMMIT")];
-                    case 16:
-                        _b.sent();
-                        return [3 /*break*/, 23];
-                    case 17:
-                        e_4 = _b.sent();
-                        log.error(e_4);
-                        _b.label = 18;
-                    case 18:
-                        _b.trys.push([18, 20, , 21]);
-                        return [4 /*yield*/, client.query("ROLLBACK")];
-                    case 19:
-                        _b.sent();
-                        return [3 /*break*/, 21];
-                    case 20:
-                        err_2 = _b.sent();
-                        log.error(err_2);
-                        throw err_2;
-                    case 21:
-                        log.error(e_4);
-                        throw e_4;
-                    case 22: return [7 /*endfinally*/];
-                    case 23:
-                        log.info("-------------- Batch Query Ends --------------");
-                        return [2 /*return*/];
-                }
-            });
-        });
-    };
-    SyncServiceHelper.ExecuteQuery = function (db, sql, log) {
-        return __awaiter(this, void 0, void 0, function () {
-            var showLog, res, client, poolClient, e_5;
+            var showLog, res, db, slaves, master, slavesConfig, e_3;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -268,44 +234,66 @@ var SyncServiceHelper = /** @class */ (function () {
                         if (showLog)
                             log.info("----------------- Query Starts----------------------------");
                         //let db: PoolClient = null;
-                        // if (showLog) log.info("\tHost Query: " + config.host);
+                        if (showLog)
+                            log.info("\tHost Query: " + config.host);
                         if (showLog)
                             log.debug(sql);
                         res = null;
-                        client = null;
-                        poolClient = null;
-                        _a.label = 1;
+                        db = null;
+                        if (!(config.slaves && config.slaves.length > 0)) return [3 /*break*/, 1];
+                        slaves = config.slaves;
+                        delete config.slaves;
+                        log.info("\t Connection REelica Started");
+                        master = new pg_1.Pool(config);
+                        slavesConfig = slaves.map(function (hostUrl) {
+                            var slaveConfig = __assign({}, config, { host: hostUrl });
+                            return new pg_1.Pool(slaveConfig);
+                        });
+                        // console.log(slaves)
+                        db = pg_replica_1.default(master, slavesConfig);
+                        return [3 /*break*/, 3];
                     case 1:
-                        _a.trys.push([1, 3, 4, 5]);
-                        client = db; // db.connect();
+                        db = new pg_1.Client(config);
+                        return [4 /*yield*/, db.connect()];
+                    case 2:
+                        _a.sent();
+                        _a.label = 3;
+                    case 3:
+                        // log.info(db)
+                        console.log(db);
+                        _a.label = 4;
+                    case 4:
+                        _a.trys.push([4, 6, 7, 8]);
+                        return [4 /*yield*/, db.query(sql)];
+                    case 5:
                         // db =
                         //   config.host.indexOf("localhost") != -1
                         //     ? await SyncServiceHelper.LocalPool.connect()
                         //     : await SyncServiceHelper.StagePool.connect();
-                        console.log(db);
-                        return [4 /*yield*/, client.query(sql)];
-                    case 2:
                         res = _a.sent();
-                        // console.log(db);
-                        // log.info(db)
+                        // log.info(db);
+                        // console.log(db)
+                        // console.log(assert(db === writer))
                         //console.log(res.rows);
                         return [2 /*return*/, { metaData: res.fields, rows: res.rows }];
-                    case 3:
-                        e_5 = _a.sent();
-                        log.error(e_5);
-                        throw e_5;
-                    case 4:
-                        //  if (client) client.release();
-                        // try {
-                        //   // db.end();
-                        // } catch (err) {
-                        //   log.error(err);
-                        //   throw err;
-                        // }
+                    case 6:
+                        e_3 = _a.sent();
+                        console.log(e_3);
+                        log.error(e_3);
+                        return [3 /*break*/, 8];
+                    case 7:
+                        //if (db) db.release();
+                        try {
+                            db.end();
+                        }
+                        catch (err) {
+                            log.error(err);
+                            // throw err;
+                        }
                         if (showLog)
                             log.info("----------------- Query Ends----------------------------");
                         return [7 /*endfinally*/];
-                    case 5: return [2 /*return*/];
+                    case 8: return [2 /*return*/];
                 }
             });
         });
@@ -313,7 +301,7 @@ var SyncServiceHelper = /** @class */ (function () {
     SyncServiceHelper.PrepareQuery = function (table, metaData, rows, filterIds, type, pk, log) {
         var metaData_1, metaData_1_1;
         return __awaiter(this, void 0, void 0, function () {
-            var e_6, _a, columns, sql, records_1, filterRows, sql_1, ele, e_6_1, records_2, filterRows;
+            var e_4, _a, columns, sql, records_1, filterRows, sql_1, ele, e_4_1, records_2, filterRows;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
@@ -352,8 +340,8 @@ var SyncServiceHelper = /** @class */ (function () {
                     case 5: return [3 /*break*/, 3];
                     case 6: return [3 /*break*/, 13];
                     case 7:
-                        e_6_1 = _b.sent();
-                        e_6 = { error: e_6_1 };
+                        e_4_1 = _b.sent();
+                        e_4 = { error: e_4_1 };
                         return [3 /*break*/, 13];
                     case 8:
                         _b.trys.push([8, , 11, 12]);
@@ -364,7 +352,7 @@ var SyncServiceHelper = /** @class */ (function () {
                         _b.label = 10;
                     case 10: return [3 /*break*/, 12];
                     case 11:
-                        if (e_6) throw e_6.error;
+                        if (e_4) throw e_4.error;
                         return [7 /*endfinally*/];
                     case 12: return [7 /*endfinally*/];
                     case 13:
@@ -449,19 +437,24 @@ var SyncServiceHelper = /** @class */ (function () {
             });
         });
     };
-    SyncServiceHelper.MetadataTable = function (connection, configData, table) {
+    SyncServiceHelper.MetadataTable = function (config, table) {
         return __awaiter(this, void 0, void 0, function () {
             var query, db, res, rows;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        query = "\n                SELECT DISTINCT\n                C.ordinal_position AS POS,\n                  C.column_name              AS NAME,\n                      C.is_nullable              AS IS_NULLABLE,\n                      C.udt_name                 AS DATA_TYPE,\n                      C.character_maximum_length AS MAX_LENGTH,\n                      ( CASE\n                          WHEN TC.constraint_type = 'PRIMARY KEY' THEN 'ID'\n                          WHEN TC.constraint_type = 'UNIQUE' THEN NULL\n                          ELSE CCU.table_name\n                        END ) AS REF\n            FROM   information_schema.columns C\n              LEFT JOIN information_schema.key_column_usage AS KCU\n                    ON ( KCU.table_name = c.table_name\n                          AND KCU.column_name = c.column_name )\n              LEFT JOIN information_schema.table_constraints TC\n                    ON TC.table_name = C.table_name\n                        AND TC.table_catalog = C.table_catalog\n                        AND TC.constraint_name = kcu.constraint_name\n              LEFT JOIN information_schema.constraint_column_usage CCU\n                    ON CCU.constraint_name = TC.constraint_name\n                        AND C.table_catalog = CCU.table_catalog\n            WHERE  C.table_catalog = '" + configData.database + "'\n              AND C.table_name = '" + table + "'\n            ORDER  BY C.ordinal_position;\n        ";
-                        db = connection;
-                        return [4 /*yield*/, db.query(query)];
+                        query = "\n                SELECT DISTINCT\n                C.ordinal_position AS POS,\n                  C.column_name              AS NAME,\n                      C.is_nullable              AS IS_NULLABLE,\n                      C.udt_name                 AS DATA_TYPE,\n                      C.character_maximum_length AS MAX_LENGTH,\n                      ( CASE\n                          WHEN TC.constraint_type = 'PRIMARY KEY' THEN 'ID'\n                          WHEN TC.constraint_type = 'UNIQUE' THEN NULL\n                          ELSE CCU.table_name\n                        END ) AS REF\n            FROM   information_schema.columns C\n              LEFT JOIN information_schema.key_column_usage AS KCU\n                    ON ( KCU.table_name = c.table_name\n                          AND KCU.column_name = c.column_name )\n              LEFT JOIN information_schema.table_constraints TC\n                    ON TC.table_name = C.table_name\n                        AND TC.table_catalog = C.table_catalog\n                        AND TC.constraint_name = kcu.constraint_name\n              LEFT JOIN information_schema.constraint_column_usage CCU\n                    ON CCU.constraint_name = TC.constraint_name\n                        AND C.table_catalog = CCU.table_catalog\n            WHERE  C.table_catalog = '" + config.database + "'\n              AND C.table_name = '" + table + "'\n            ORDER  BY C.ordinal_position;\n        ";
+                        db = new pg_1.Client(config);
+                        return [4 /*yield*/, db.connect()];
                     case 1:
+                        _a.sent();
+                        return [4 /*yield*/, db.query(query)];
+                    case 2:
                         res = _a.sent();
                         rows = res.rows;
-                        // await db.end();
+                        return [4 /*yield*/, db.end()];
+                    case 3:
+                        _a.sent();
                         return [2 /*return*/, rows];
                 }
             });
@@ -469,16 +462,14 @@ var SyncServiceHelper = /** @class */ (function () {
     };
     SyncServiceHelper.ErrorMessage = function (type, err, log) {
         return __awaiter(this, void 0, void 0, function () {
-            var sql, _a, _b;
-            return __generator(this, function (_c) {
-                switch (_c.label) {
+            var sql;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
                     case 0:
                         sql = "\n    INSERT INTO sync_error \n    (id, store_id, \"type\", error_msg, error_desc) \n    VALUES(\n      '" + App_1.App.UniqueNumber() + "', '" + STORE_ID + "', '" + type + "', '" + JSON.stringify(err) + "', '" + (err.message ? err.message : "") + "'\n    )\n  ";
-                        _b = (_a = SyncServiceHelper).BatchQuery;
-                        return [4 /*yield*/, SyncServiceHelper.StagePool];
-                    case 1: return [4 /*yield*/, _b.apply(_a, [_c.sent(), [sql], log])];
-                    case 2:
-                        _c.sent();
+                        return [4 /*yield*/, SyncServiceHelper.BatchQuery(SyncServiceHelper.StageDBOptions(), [sql], log)];
+                    case 1:
+                        _a.sent();
                         return [2 /*return*/];
                 }
             });
@@ -523,12 +514,12 @@ var SyncServiceHelper = /** @class */ (function () {
             user: Config.dbOptions.username,
             password: Config.dbOptions.password,
             database: Config.dbOptions.database,
-            max: 25,
+            max: 2,
             idleTimeoutMillis: 0,
         };
     };
     SyncServiceHelper.LayeredStageDBOptions = function () {
-        var syncStageDbOptions = Config.syncStageDbOptions; //Config.getSyncDb();
+        var syncStageDbOptions = Config.syncStageDbOptions;
         var connectionConfig = {
             host: syncStageDbOptions.host,
             port: syncStageDbOptions.port,
@@ -543,137 +534,64 @@ var SyncServiceHelper = /** @class */ (function () {
         }
         return __assign({}, connectionConfig);
     };
-    SyncServiceHelper.getLayeredStagePool = function () {
+    SyncServiceHelper.UpdateCall = function (type, log, data) {
         return __awaiter(this, void 0, void 0, function () {
-            var layeredCongigDBOptions_1, db, slaves, master, slavesConfig;
+            var sql, layeredstageDb;
             return __generator(this, function (_a) {
-                try {
-                    layeredCongigDBOptions_1 = SyncServiceHelper.LayeredStageDBOptions();
-                    db = null;
-                    slaves = layeredCongigDBOptions_1.slaves;
-                    master = new pg_1.Pool(layeredCongigDBOptions_1);
-                    if (slaves && slaves.length > 0) {
-                        delete layeredCongigDBOptions_1.slaves;
-                        slavesConfig = slaves.map(function (hostUrl) {
-                            var newReplicaConfig = __assign({}, layeredCongigDBOptions_1);
-                            newReplicaConfig.host = hostUrl;
-                            return new pg_1.Pool(newReplicaConfig);
-                        });
-                        db = pg_replica_1.default(master, slavesConfig);
-                        console.log("replica created");
-                    }
-                    else {
-                        db = master;
-                        // db = new Client(layeredCongigDBOptions);
-                        // await db.connect();
-                    }
-                    console.log("--------------------------------connection stated layerd----------------------------------");
-                    db.on("connect", function () {
-                        console.log("*************(Connection happend in layered stage)!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-                    });
-                    db.on("error", function () {
-                        console.log("*************(Error happend in layered stage)!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-                    });
-                    // await db.connect()
-                    // db.release=(await db.connect()).release;
-                    return [2 /*return*/, db];
+                switch (_a.label) {
+                    case 0:
+                        sql = null;
+                        layeredstageDb = SyncServiceHelper.LayeredStageDBOptions();
+                        if (type == "RESET") {
+                            sql = "UPDATE sync_source SET  is_reset = false, updated_on = '" + moment().toISOString() + "'  WHERE id='" + STORE_ID + "' ";
+                        }
+                        else if (type == "CMD") {
+                            sql = data;
+                        }
+                        else if (type == "JSON") {
+                            sql = "UPDATE sync_source SET  sync_cmd = null, updated_on = '" + moment().toISOString() + "'  WHERE id='" + STORE_ID + "' ";
+                        }
+                        else if (type == "VERSION") {
+                            sql = "UPDATE sync_source SET  type = 'v" + data + "', updated_on = '" + moment().toISOString() + "'  WHERE id='" + STORE_ID + "' ";
+                        }
+                        else if (type == "MAC") {
+                            sql = "UPDATE sync_source SET  mac_address = '" + data + "', updated_on = '" + moment().toISOString() + "'  WHERE id='" + STORE_ID + "' ";
+                        }
+                        if (!sql) return [3 /*break*/, 2];
+                        return [4 /*yield*/, SyncServiceHelper.BatchQuery(layeredstageDb, [sql], log)];
+                    case 1:
+                        _a.sent();
+                        _a.label = 2;
+                    case 2: return [2 /*return*/];
                 }
-                catch (error) {
-                }
-                return [2 /*return*/];
             });
         });
     };
-    SyncServiceHelper.getStagePool = function () {
+    SyncServiceHelper.StoreSource = function (storeid, log) {
         return __awaiter(this, void 0, void 0, function () {
-            var stageCongigDBOptions_1, db, slaves, master, slavesConfig, e_7;
+            var sql, stageDb, syncResults, error_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        stageCongigDBOptions_1 = SyncServiceHelper.StageDBOptions();
-                        db = null;
-                        slaves = stageCongigDBOptions_1.slaves;
-                        master = new pg_1.Pool(stageCongigDBOptions_1);
-                        if (slaves && slaves.length > 0) {
-                            delete stageCongigDBOptions_1.slaves;
-                            slavesConfig = slaves.map(function (hostUrl) {
-                                var newReplicaConfig = __assign({}, stageCongigDBOptions_1);
-                                newReplicaConfig.host = hostUrl;
-                                return new pg_1.Pool(newReplicaConfig);
-                            });
-                            console.log("replica created");
-                            db = pg_replica_1.default(master, slavesConfig);
-                        }
-                        else {
-                            db = master;
-                            // db = new Client(stageCongigDBOptions);
-                            // await db.connect();
-                        }
-                        console.log("--------------------------------connection stated stage----------------------------------");
-                        db.on("connect", function (client) {
-                            console.log("*************(Connection happend in stage)!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-                            // console.log(client)
-                        });
-                        db.on("error", function () {
-                            console.log("*************(Error happend in stage)!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-                        });
-                        return [4 /*yield*/, db.connect()
-                            //  db.release=(await db.connect()).release;
-                        ];
+                        stageDb = SyncServiceHelper.StageDBOptions();
+                        sql = "select * from sync_source where id='" + storeid + "' ";
+                        log.info(sql);
+                        return [4 /*yield*/, SyncServiceHelper.ExecuteQuery(stageDb, sql, log)];
                     case 1:
-                        _a.sent();
-                        //  db.release=(await db.connect()).release;
-                        return [2 /*return*/, db];
+                        syncResults = _a.sent();
+                        syncResults = syncResults.rows;
+                        syncResults = syncResults.length > 0 ? syncResults[0] : null;
+                        return [2 /*return*/, Promise.resolve(syncResults)];
                     case 2:
-                        e_7 = _a.sent();
-                        console.log(e_7);
+                        error_1 = _a.sent();
+                        log.error(error_1);
                         return [3 /*break*/, 3];
                     case 3: return [2 /*return*/];
                 }
             });
         });
     };
-    // static async UpdateCall(type: string, log: any, data?: any) {
-    //   let sql = null;
-    //   let layeredstageDb = SyncServiceHelper.LayeredStageDBOptions();
-    //   let pool= (await PoolConnectionConfig);
-    //   if(pool&&pool.LayeredStagePool){
-    //     let layeredstageDbPool = (await PoolConnectionConfig).LayeredStagePool;
-    //     if (type == "RESET") {
-    //       sql = `UPDATE sync_source SET  is_reset = false, updated_on = '${moment().toISOString()}'  WHERE id='${STORE_ID}' `;
-    //     } else if (type == "CMD") {
-    //       sql = data;
-    //     } else if (type == "JSON") {
-    //       sql = `UPDATE sync_source SET  sync_cmd = null, updated_on = '${moment().toISOString()}'  WHERE id='${STORE_ID}' `;
-    //     } else if (type == "VERSION") {
-    //       sql = `UPDATE sync_source SET  type = 'v${data}', updated_on = '${moment().toISOString()}'  WHERE id='${STORE_ID}' `;
-    //     } else if (type == "MAC") {
-    //       sql = `UPDATE sync_source SET  mac_address = '${data}', updated_on = '${moment().toISOString()}'  WHERE id='${STORE_ID}' `;
-    //     }
-    //     if (sql) {
-    //       await SyncServiceHelper.BatchQueryunPool(layeredstageDbPool, [sql], log);
-    //     }
-    //   }
-    // }
-    // static async StoreSource(storeid: string, log: any) {
-    //   let sql: any;
-    //   try {
-    //     let layeredstageDbPool = await SyncServiceHelper.LayeredStagePool;
-    //     let stageDbPool = (await PoolConnectionConfig).StagePool;
-    //     if(stageDbPool){
-    //       sql = `select * from sync_source where id='${storeid}' `;
-    //       log.info(sql);
-    //       let syncResults: any = await SyncServiceHelper.ExecuteQuery(stageDbPool, sql, log);
-    //       syncResults = syncResults.rows;
-    //       syncResults = syncResults.length > 0 ? syncResults[0] : null;
-    //       return Promise.resolve(syncResults);
-    //     }
-    //   } catch (error) {
-    //     log.error(error);
-    //     // throw error;
-    //   }
-    // }
     /**
      *
      * @param type  "INSERT", "UPDATE", "SELECT"
@@ -695,7 +613,7 @@ var SyncServiceHelper = /** @class */ (function () {
         var sql = "select * from " + tableName + " where " + pk + "= '" + value + "' ";
         return sql;
     };
-    SyncServiceHelper.BuildBatchQuery = function (soruceRes, sync, log, targetDbPool, targetDb, batchSql) {
+    SyncServiceHelper.BuildBatchQuery = function (soruceRes, sync, log, targetDb, batchSql) {
         return __awaiter(this, void 0, void 0, function () {
             var rowsAvalible, rowsNotAvalible, sql, rowsLength, primaryKeys, res, metaDataTable;
             return __generator(this, function (_a) {
@@ -710,14 +628,14 @@ var SyncServiceHelper = /** @class */ (function () {
                         return [4 /*yield*/, SyncServiceHelper.ChackAvalibleQuery(sync.map_table, soruceRes.metaData, primaryKeys, sync.map_pk, log)];
                     case 1:
                         sql = _a.sent();
-                        return [4 /*yield*/, SyncServiceHelper.ExecuteQuery(targetDbPool, sql, log)];
+                        return [4 /*yield*/, SyncServiceHelper.ExecuteQuery(targetDb, sql, log)];
                     case 2:
                         res = _a.sent();
                         rowsAvalible = res.rows.map(function (ele) { return ele[sync.map_pk]; });
                         rowsNotAvalible = primaryKeys.filter(function (ele) { return rowsAvalible.indexOf(ele) < 0; });
                         log.debug("\t\tUpdate Records: " + sync.map_table + " --> " + rowsAvalible.length);
                         log.debug("\t\tInsert Records: " + sync.map_table + " --> " + rowsNotAvalible.length);
-                        return [4 /*yield*/, SyncServiceHelper.MetadataTable(targetDbPool, targetDb, sync.map_table)];
+                        return [4 /*yield*/, SyncServiceHelper.MetadataTable(targetDb, sync.map_table)];
                     case 3:
                         metaDataTable = _a.sent();
                         if (!(rowsAvalible && rowsAvalible.length > 0)) return [3 /*break*/, 5];

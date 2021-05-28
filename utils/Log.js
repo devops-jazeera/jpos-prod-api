@@ -100,8 +100,6 @@ exports.hlog = log4js_1.getLogger("health");
 exports.hlog.addContext("type", "health");
 exports.saleslog = log4js_1.getLogger("sales");
 exports.saleslog.addContext("type", "sales");
-exports.internetlogs = log4js_1.getLogger("internetcheck");
-exports.internetlogs.addContext("type", "internetcheck");
 // export const log = getLogger();
 // export const slog = getLogger();
 // export const ulog = getLogger();
