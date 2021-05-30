@@ -139,6 +139,10 @@ var LedgerJournalTrans = /** @class */ (function () {
         __metadata("design:type", String)
     ], LedgerJournalTrans.prototype, "productline", void 0);
     __decorate([
+        typeorm_1.Column({ name: "inventlocationid" }),
+        __metadata("design:type", String)
+    ], LedgerJournalTrans.prototype, "inventlocationid", void 0);
+    __decorate([
         typeorm_1.JoinColumn({ name: "journalnum" }),
         typeorm_1.ManyToOne(function (type) { return GeneralJournal_1.GeneralJournal; }),
         __metadata("design:type", GeneralJournal_1.GeneralJournal)

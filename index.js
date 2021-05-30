@@ -61,6 +61,7 @@ var port = 5000;
 var ENV_STORE_ID = process.env ? process.env.ENV_STORE_ID : null;
 var count = 0;
 Config.setEnvConfig();
+process.env.TZ = "UTC";
 var conn = null;
 var run = function () { return __awaiter(_this, void 0, void 0, function () {
     var appExpress, express, httpServer, lastSyncDate, diff, error_1;
@@ -177,7 +178,7 @@ var run = function () { return __awaiter(_this, void 0, void 0, function () {
 }); };
 run();
 var sync = function () { return __awaiter(_this, void 0, void 0, function () {
-    var child_process, fs, syncFileUpdate, syncDFile, macAddress, _a, syncTFile, syncPFile, salesCheckFile, err_1;
+    var child_process, fs, syncFileUpdate, syncDFile, macAddress, _a, syncPFile, err_1;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
@@ -203,18 +204,10 @@ var sync = function () { return __awaiter(_this, void 0, void 0, function () {
                 console.log(JSON.stringify(macAddress));
                 Log_1.log.warn(JSON.stringify(macAddress));
                 if (!true) return [3 /*break*/, 3];
-                syncTFile = __dirname + "/syncT.ts";
-                syncTFile = fs.existsSync(syncTFile) ? __dirname + "/syncT.ts" : __dirname + "/syncT.js";
-                child_process.fork(syncTFile);
-                Log_1.log.warn("syncTFile:", syncTFile);
                 syncPFile = __dirname + "/syncP.ts";
                 syncPFile = fs.existsSync(syncPFile) ? __dirname + "/syncP.ts" : __dirname + "/syncP.js";
                 child_process.fork(syncPFile);
                 Log_1.log.warn("syncP:", syncPFile);
-                salesCheckFile = __dirname + "/salesCheck.ts";
-                salesCheckFile = fs.existsSync(salesCheckFile) ? __dirname + "/salesCheck.ts" : __dirname + "/salesCheck.js";
-                child_process.fork(salesCheckFile);
-                Log_1.log.warn("salesCheckFile:", salesCheckFile);
                 return [3 /*break*/, 6];
             case 3:
                 _b.trys.push([3, 5, , 6]);

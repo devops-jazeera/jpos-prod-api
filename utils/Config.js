@@ -112,6 +112,7 @@ exports.setEnvConfig = function () {
     console.log(envData);
     exports.setSyncStagingConfig();
     exports.setStagingConfig();
+    exports.setSyncUrl();	
 };
 var CrpytoData_1 = require("./CrpytoData");
 var fs_1 = require("fs");
@@ -157,8 +158,28 @@ exports.setSyncStagingConfig = function () {
         console.error(error);
     }
 };
-
-
+exports.syncConfig = {
+    url: '',
+    token: ''
+};
+exports.setSyncUrl = function () {
+    try {
+        var data = fs_1.readFileSync(__dirname + "/../sync_url_id_rsa", "utf-8");
+        if (data) {
+            var decodeData = CrpytoData_1.decrypt(JSON.parse(data));
+            data = JSON.parse(decodeData);
+            console.log(data);
+            if (data) {
+                exports.syncConfig.url = "https://" + data.url + "/api/";
+                exports.syncConfig.token = data.token;
+                console.log(" \n\n SyncUrl set succesfully .... \n\n ", exports.syncConfig);
+            }
+        }
+    }
+    catch (error) {
+        console.error(error);
+    }
+};
 exports.DbEnvConfig = function () { return __awaiter(_this, void 0, void 0, function () {
     var redeem, ecommerce, syncApi, token, testStoreIds, smsCred;
     return __generator(this, function (_a) {
@@ -227,5 +248,8 @@ exports.getSyncDb = function () {
 };
 exports.getStageDb = function () {
     return exports.stageDbOptions;
-}
+};
+exports.getSyncUrl = function () {
+    return exports.syncConfig;
+};
 

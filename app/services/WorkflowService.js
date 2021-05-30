@@ -308,6 +308,7 @@ var WorkflowService = /** @class */ (function () {
                         selectedLines = _b.sent();
                         selectedLinesData = {
                             lines: selectedLines,
+                            inventlocationid: this.sessionInfo.inventlocationid
                         };
                         return [3 /*break*/, 32];
                     case 31:

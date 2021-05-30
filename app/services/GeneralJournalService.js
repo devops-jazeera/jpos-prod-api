@@ -187,6 +187,7 @@ var GeneralJournalService = /** @class */ (function () {
                         item.modifiedDateTime = new Date(App_1.App.DateNow());
                         item.lastModifiedBy = this.sessionInfo.userName;
                         item.lastModifiedDate = new Date(App_1.App.DateNow());
+                        item.inventlocationid = this.sessionInfo.inventlocationid;
                         return [4 /*yield*/, queryRunner.manager.getRepository(LedgerJournalTrans_1.LedgerJournalTrans).save(item)];
                     case 13:
                         _b.sent();

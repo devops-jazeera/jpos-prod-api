@@ -57,20 +57,26 @@ var SyncDMLService = /** @class */ (function () {
     }
     SyncDMLService.prototype.deleteExecute = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var layerStageDbConfig, stageDbConfig, localDbConfig, sql, syncResults, sysDeleteQuery, tableDeleteQuery, err_1;
+            var layerStageDbConfig, stageDbConfig, localDbConfig, syncUrl, stageUrl, layeredUrl, token, sql, syncResults, sysDeleteQuery, tableDeleteQuery, err_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         this.log.info("#################### DeleteExecute " + STORE_ID + " - " + new Date().toISOString() + " #######################");
                         _a.label = 1;
                     case 1:
-                        _a.trys.push([1, 5, , 6]);
+                        _a.trys.push([1, 6, , 7]);
                         layerStageDbConfig = SyncServiceHelper_1.SyncServiceHelper.LayeredStageDBOptions();
                         stageDbConfig = SyncServiceHelper_1.SyncServiceHelper.StageDBOptions();
                         localDbConfig = SyncServiceHelper_1.SyncServiceHelper.LocalDBOptions();
+                        return [4 /*yield*/, SyncServiceHelper_1.SyncServiceHelper.syncUrl()];
+                    case 2:
+                        syncUrl = _a.sent();
+                        stageUrl = syncUrl.url + 'stagedata/';
+                        layeredUrl = syncUrl.url + 'syncdata/';
+                        token = syncUrl.token;
                         sql = "SELECT table_id, table_name, table_value, deleted_on FROM sync_delete_data order by deleted_on asc limit 250";
                         return [4 /*yield*/, SyncServiceHelper_1.SyncServiceHelper.ExecuteQuery(localDbConfig, sql, this.log)];
-                    case 2:
+                    case 3:
                         syncResults = _a.sent();
                         syncResults = syncResults ? syncResults.rows : [];
                         syncResults = syncResults.length > 0 ? syncResults : null;
@@ -78,20 +84,22 @@ var SyncDMLService = /** @class */ (function () {
                         if (!syncResults)
                             return [2 /*return*/, Promise.resolve("")];
                         sysDeleteQuery = this.buildDMLSyncDeleteQuery(syncResults);
-                        return [4 /*yield*/, SyncServiceHelper_1.SyncServiceHelper.BatchQuery(stageDbConfig, sysDeleteQuery, this.log)];
-                    case 3:
+                        // await SyncServiceHelper.BatchQuery(stageDbConfig, sysDeleteQuery, this.log);
+                        return [4 /*yield*/, SyncServiceHelper_1.SyncServiceHelper.BatchQueryApi(stageUrl + 'batchquery', token, sysDeleteQuery, this.log)];
+                    case 4:
+                        // await SyncServiceHelper.BatchQuery(stageDbConfig, sysDeleteQuery, this.log);
                         _a.sent();
                         tableDeleteQuery = this.buildDMLDeleteQuery(syncResults);
                         return [4 /*yield*/, SyncServiceHelper_1.SyncServiceHelper.BatchQuery(localDbConfig, tableDeleteQuery, this.log)];
-                    case 4:
-                        _a.sent();
-                        return [3 /*break*/, 6];
                     case 5:
+                        _a.sent();
+                        return [3 /*break*/, 7];
+                    case 6:
                         err_1 = _a.sent();
                         this.log.warn(":::::::::::::::::::CATCH DELETE BLOCK START ::::::::::::::::::::::");
                         this.log.error(err_1);
-                        return [3 /*break*/, 6];
-                    case 6:
+                        return [3 /*break*/, 7];
+                    case 7:
                         this.log.info("#################### DeleteExecute #######################");
                         return [2 /*return*/];
                 }
@@ -101,7 +109,7 @@ var SyncDMLService = /** @class */ (function () {
     SyncDMLService.prototype.execute = function (type, priority, fallback) {
         if (priority === void 0) { priority = 9; }
         return __awaiter(this, void 0, void 0, function () {
-            var layeredStageDbConfig, stageDbConfig, localDbConfig, sql, utcDate, utcDateTime, currentTime, syncResults, sourceDB, targetDB, error_1;
+            var layeredStageDbConfig, stageDbConfig, localDbConfig, syncUrl, stageUrl, layeredUrl, token, sql, utcDate, utcDateTime, currentTime, syncResults, sourceDB, targetDB, dbSourceCond, error_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -110,11 +118,19 @@ var SyncDMLService = /** @class */ (function () {
                         this.log.debug("!!!!!!!!!!!!!!!!!!!! " + STORE_ID + " - " + new Date().toISOString() + "!!!!!!!!!!!!!!!!!!!!");
                         layeredStageDbConfig = SyncServiceHelper_1.SyncServiceHelper.LayeredStageDBOptions();
                         stageDbConfig = SyncServiceHelper_1.SyncServiceHelper.StageDBOptions();
+                        this.log.info(stageDbConfig);
                         localDbConfig = SyncServiceHelper_1.SyncServiceHelper.LocalDBOptions();
-                        sql = "SELECT to_char (now(), 'YYYY-MM-DD\"T\"HH24:MI:SS') as utc_date";
-                        return [4 /*yield*/, SyncServiceHelper_1.SyncServiceHelper.ExecuteQuery(layeredStageDbConfig, sql, this.log)];
+                        return [4 /*yield*/, SyncServiceHelper_1.SyncServiceHelper.syncUrl()];
                     case 1:
+                        syncUrl = _a.sent();
+                        stageUrl = syncUrl.url + 'stagedata/';
+                        layeredUrl = syncUrl.url + 'syncdata/';
+                        token = syncUrl.token;
+                        sql = "SELECT to_char (now(), 'YYYY-MM-DD\"T\"HH24:MI:SS') as utc_date";
+                        return [4 /*yield*/, SyncServiceHelper_1.SyncServiceHelper.ExecuteQueryApi(layeredUrl + 'executequery', token, 'sync_table', sql, this.log)];
+                    case 2:
                         utcDate = _a.sent();
+                        console.log(utcDate);
                         utcDateTime = utcDate ? utcDate.rows[0]["utc_date"] : null;
                         if (utcDateTime == null) {
                             this.log.error("+++++++++++++++++++++++ DB CONNECTION FAILED DUE TO INTERNET ISSUE +++++++++++++++++++++++");
@@ -127,9 +143,9 @@ var SyncDMLService = /** @class */ (function () {
                             this.log.error("+++++++++++++++++++++++ INVALID DATE SYNC +++++++++++++++++++++++");
                             return [2 /*return*/, Promise.resolve("")];
                         }
-                        _a.label = 2;
-                    case 2:
-                        _a.trys.push([2, 6, , 7]);
+                        _a.label = 3;
+                    case 3:
+                        _a.trys.push([3, 7, , 8]);
                         if (stageDbConfig.host == localDbConfig.host)
                             throw { message: "Invalid DB config Data" };
                         if (fallback == null) {
@@ -144,8 +160,8 @@ var SyncDMLService = /** @class */ (function () {
                             sql = " select * from sync_table \n        where (target_id = '" + STORE_ID + "' ) \n        and active = true \n        and map_table = '" + fallback.table_name + "' \n        order by updated_on  ASC \n        limit 1";
                         }
                         console.log(sql);
-                        return [4 /*yield*/, SyncServiceHelper_1.SyncServiceHelper.ExecuteQuery(layeredStageDbConfig, sql, this.log)];
-                    case 3:
+                        return [4 /*yield*/, SyncServiceHelper_1.SyncServiceHelper.ExecuteQueryApi(layeredUrl + 'executequery', token, 'sync_table', sql, this.log)];
+                    case 4:
                         syncResults = _a.sent();
                         syncResults = syncResults ? syncResults.rows : [];
                         syncResults = syncResults.length > 0 ? syncResults[0] : null;
@@ -157,9 +173,10 @@ var SyncDMLService = /** @class */ (function () {
                         console.log("========================syncResults.last_update ======================================");
                         console.log("" + syncResults.last_update);
                         console.log("========================syncResults.last_update ======================================");
-                        if (!(syncResults.source_id != syncResults.target_id)) return [3 /*break*/, 5];
+                        if (!(syncResults.source_id != syncResults.target_id)) return [3 /*break*/, 6];
                         sourceDB = syncResults.source_id == STAGING_ID ? stageDbConfig : localDbConfig;
                         targetDB = syncResults.target_id == STORE_ID ? localDbConfig : stageDbConfig;
+                        dbSourceCond = syncResults.source_id == STAGING_ID ? 'STAGING' : 'LOCAL';
                         // if (syncResults.source_id != STAGING_ID) {
                         //   syncResults.last_update = moment(syncResults.last_update)
                         //     .format()
@@ -171,16 +188,16 @@ var SyncDMLService = /** @class */ (function () {
                             syncResults.last_update = fallback.from_date;
                             this.log.debug(JSON.stringify(syncResults, null, 2));
                         }
-                        return [4 /*yield*/, this.syncDb(sourceDB, targetDB, syncResults, currentTime)];
-                    case 4:
+                        return [4 /*yield*/, this.syncDb(sourceDB, targetDB, syncResults, currentTime, dbSourceCond)];
+                    case 5:
                         _a.sent();
-                        _a.label = 5;
-                    case 5: return [3 /*break*/, 7];
-                    case 6:
+                        _a.label = 6;
+                    case 6: return [3 /*break*/, 8];
+                    case 7:
                         error_1 = _a.sent();
                         this.log.error(error_1);
-                        return [3 /*break*/, 7];
-                    case 7:
+                        return [3 /*break*/, 8];
+                    case 8:
                         this.log.info("###########################################");
                         return [2 /*return*/];
                 }
@@ -191,13 +208,19 @@ var SyncDMLService = /** @class */ (function () {
         //convert the offset to milliseconds, add to targetTime, and make a new Date
         return new Date(date.getTime() - date.getTimezoneOffset() * 60 * 1000).toISOString();
     };
-    SyncDMLService.prototype.syncDb = function (sourceDb, targetDb, sync, currentTime) {
+    SyncDMLService.prototype.syncDb = function (sourceDb, targetDb, sync, currentTime, dbSourceCond) {
         return __awaiter(this, void 0, void 0, function () {
-            var updateSyncConfig, batchSql, sql, isChunkEnd, offset, isTableUpdated, lastUpdate, rowsAvalible_1, rowsNotAvalible, soruceRes, rowsLength, primaryKeys, res, metaDataTable, updateQuery, lastUpdateDateQuery, lastUpdateDateData, lastUpdateId, err_2, updateQuery;
+            var updateSyncConfig, syncUrl, stageUrl, layeredUrl, token, batchSql, sql, isChunkEnd, offset, isTableUpdated, lastUpdate, rowsAvalible_1, rowsNotAvalible, soruceRes, rowsLength, primaryKeys, res, metaDataTable, updateQuery, lastUpdateDateQuery, lastUpdateDateData, lastUpdateId, err_2, updateQuery;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         updateSyncConfig = SyncServiceHelper_1.SyncServiceHelper.LayeredStageDBOptions();
+                        return [4 /*yield*/, SyncServiceHelper_1.SyncServiceHelper.syncUrl()];
+                    case 1:
+                        syncUrl = _a.sent();
+                        stageUrl = syncUrl.url + 'stagedata/';
+                        layeredUrl = syncUrl.url + 'syncdata/';
+                        token = syncUrl.token;
                         batchSql = [];
                         isChunkEnd = false;
                         offset = 0;
@@ -205,9 +228,10 @@ var SyncDMLService = /** @class */ (function () {
                         lastUpdate = currentTime;
                         //let lastUpdate = await this.buildLastUpdatedDate(sourceDb, sync);
                         this.log.info("************* Last Update: " + lastUpdate + " *************");
-                        _a.label = 1;
-                    case 1:
-                        _a.trys.push([1, 18, , 21]);
+                        this.log.info(sourceDb);
+                        _a.label = 2;
+                    case 2:
+                        _a.trys.push([2, 33, , 36]);
                         rowsAvalible_1 = null;
                         rowsNotAvalible = null;
                         // while (isChunkEnd == false) {
@@ -216,86 +240,144 @@ var SyncDMLService = /** @class */ (function () {
                         rowsNotAvalible = null;
                         batchSql = [];
                         sql = this.buildDMLSelectQuery(sync, offset);
-                        console.log("++++++++++++++++++++++++++++++++++++sourceDb++++++++++++++++++++++++++++++++++++++++++++");
-                        console.log(sourceDb);
-                        console.log("++++++++++++++++++++++++++++++++++++sourceDb++++++++++++++++++++++++++++++++++++++++++++");
-                        return [4 /*yield*/, SyncServiceHelper_1.SyncServiceHelper.ExecuteQuery(sourceDb, sql, this.log)];
-                    case 2:
+                        soruceRes = void 0;
+                        if (!(dbSourceCond == 'STAGING')) return [3 /*break*/, 4];
+                        return [4 /*yield*/, SyncServiceHelper_1.SyncServiceHelper.ExecuteQueryApi(stageUrl + 'executequery', token, sync.map_table, sql, this.log)];
+                    case 3:
                         soruceRes = _a.sent();
-                        if (!(soruceRes && soruceRes.rows.length != 0)) return [3 /*break*/, 12];
+                        return [3 /*break*/, 6];
+                    case 4:
+                        this.log.info("%%%%%%% syncDb %%%%%%%%");
+                        return [4 /*yield*/, SyncServiceHelper_1.SyncServiceHelper.ExecuteQuery(sourceDb, sql, this.log)];
+                    case 5:
+                        soruceRes = _a.sent();
+                        _a.label = 6;
+                    case 6:
+                        if (!(soruceRes && soruceRes.rows.length != 0)) return [3 /*break*/, 24];
                         rowsLength = soruceRes.rows.length;
                         primaryKeys = soruceRes.rows.map(function (ele) { return ele[sync.map_pk]; });
                         return [4 /*yield*/, SyncServiceHelper_1.SyncServiceHelper.ChackAvalibleQuery(sync.map_table, soruceRes.metaData, primaryKeys, sync.map_pk, this.log)];
-                    case 3:
-                        sql = _a.sent();
-                        return [4 /*yield*/, SyncServiceHelper_1.SyncServiceHelper.ExecuteQuery(targetDb, sql, this.log)];
-                    case 4:
-                        res = _a.sent();
-                        rowsAvalible_1 = res.rows.map(function (ele) { return ele[sync.map_pk]; });
-                        rowsNotAvalible = primaryKeys.filter(function (ele) { return rowsAvalible_1.indexOf(ele) < 0; });
-                        return [4 /*yield*/, SyncServiceHelper_1.SyncServiceHelper.MetadataTable(targetDb, sync.map_table)];
-                    case 5:
-                        metaDataTable = _a.sent();
-                        this.log.debug("is_reupdate" + ("" + sync.is_reupdate));
-                        if (!(rowsAvalible_1 && rowsAvalible_1.length > 0 && sync.is_reupdate == true)) return [3 /*break*/, 7];
-                        this.log.debug("\t\tUpdate Records: " + sync.map_table + " --> " + rowsAvalible_1.length);
-                        return [4 /*yield*/, SyncServiceHelper_1.SyncServiceHelper.PrepareQuery(sync.map_table, metaDataTable, soruceRes.rows, rowsAvalible_1, "UPDATE", sync.map_pk, this.log)];
-                    case 6:
-                        sql = _a.sent();
-                        batchSql.push(sql);
-                        _a.label = 7;
                     case 7:
-                        if (!(rowsNotAvalible && rowsNotAvalible.length > 0)) return [3 /*break*/, 9];
-                        this.log.debug("\t\tInsert Records: " + sync.map_table + " --> " + rowsNotAvalible.length);
-                        return [4 /*yield*/, SyncServiceHelper_1.SyncServiceHelper.PrepareQuery(sync.map_table, metaDataTable, soruceRes.rows, rowsNotAvalible, "INSERT", sync.map_pk, this.log)];
-                    case 8:
                         sql = _a.sent();
-                        batchSql.push(sql);
-                        _a.label = 9;
-                    case 9:
-                        if (!(batchSql && batchSql.length > 0)) return [3 /*break*/, 11];
-                        return [4 /*yield*/, SyncServiceHelper_1.SyncServiceHelper.BatchQuery(targetDb, batchSql, this.log)];
+                        this.log.info("$$$$$$$$$$$$ sql $$$$$$$$$$$");
+                        res = void 0;
+                        if (!(dbSourceCond == 'STAGING')) return [3 /*break*/, 9];
+                        this.log.info("%%%%%%% targetDb %%%%%%%%");
+                        return [4 /*yield*/, SyncServiceHelper_1.SyncServiceHelper.ExecuteQuery(targetDb, sql, this.log)];
+                    case 8:
+                        res = _a.sent();
+                        return [3 /*break*/, 11];
+                    case 9: return [4 /*yield*/, SyncServiceHelper_1.SyncServiceHelper.ExecuteQueryApi(stageUrl + 'executequery', token, sync.map_table, sql, this.log)];
                     case 10:
-                        _a.sent();
+                        res = _a.sent();
                         _a.label = 11;
                     case 11:
+                        rowsAvalible_1 = res.rows.map(function (ele) { return ele[sync.map_pk]; });
+                        rowsNotAvalible = primaryKeys.filter(function (ele) { return rowsAvalible_1.indexOf(ele) < 0; });
+                        metaDataTable = void 0;
+                        if (!(dbSourceCond == 'STAGING')) return [3 /*break*/, 13];
+                        this.log.info("%%%%%%% MetadataTable STAGING  %%%%%%%%");
+                        this.log.info(sourceDb);
+                        sourceDb = SyncServiceHelper_1.SyncServiceHelper.StageDBOptions();
+                        this.log.info(sourceDb);
+                        return [4 /*yield*/, SyncServiceHelper_1.SyncServiceHelper.MetadataTableApi(stageUrl + 'executequery', token, sourceDb, sync.map_table, this.log)];
+                    case 12:
+                        metaDataTable = _a.sent();
+                        return [3 /*break*/, 15];
+                    case 13:
+                        this.log.info("%%%%%%% MetadataTable " + dbSourceCond + "  %%%%%%%%");
+                        this.log.info(targetDb);
+                        if (targetDb && !targetDb.host) {
+                            targetDb = SyncServiceHelper_1.SyncServiceHelper.LocalDBOptions();
+                        }
+                        this.log.info(targetDb);
+                        this.log.info("%%%%%%% MetadataTable %%%%%%%%");
+                        return [4 /*yield*/, SyncServiceHelper_1.SyncServiceHelper.MetadataTable(targetDb, sync.map_table)];
+                    case 14:
+                        metaDataTable = _a.sent();
+                        _a.label = 15;
+                    case 15:
+                        // this.log.info(metaDataTable)
+                        this.log.debug("is_reupdate" + ("" + sync.is_reupdate));
+                        if (!(rowsAvalible_1 && rowsAvalible_1.length > 0 && sync.is_reupdate == true)) return [3 /*break*/, 17];
+                        this.log.debug("\t\tUpdate Records: " + sync.map_table + " --> " + rowsAvalible_1.length);
+                        return [4 /*yield*/, SyncServiceHelper_1.SyncServiceHelper.PrepareQuery(sync.map_table, metaDataTable, soruceRes.rows, rowsAvalible_1, "UPDATE", sync.map_pk, this.log)];
+                    case 16:
+                        sql = _a.sent();
+                        batchSql.push(sql);
+                        _a.label = 17;
+                    case 17:
+                        if (!(rowsNotAvalible && rowsNotAvalible.length > 0)) return [3 /*break*/, 19];
+                        this.log.debug("\t\tInsert Records: " + sync.map_table + " --> " + rowsNotAvalible.length);
+                        return [4 /*yield*/, SyncServiceHelper_1.SyncServiceHelper.PrepareQuery(sync.map_table, metaDataTable, soruceRes.rows, rowsNotAvalible, "INSERT", sync.map_pk, this.log)];
+                    case 18:
+                        sql = _a.sent();
+                        batchSql.push(sql);
+                        _a.label = 19;
+                    case 19:
+                        if (!(batchSql && batchSql.length > 0)) return [3 /*break*/, 23];
+                        this.log.info(":::::: " + dbSourceCond + ":::::::");
+                        if (!(dbSourceCond == 'STAGING')) return [3 /*break*/, 21];
+                        return [4 /*yield*/, SyncServiceHelper_1.SyncServiceHelper.BatchQuery(targetDb, batchSql, this.log)];
+                    case 20:
+                        _a.sent();
+                        return [3 /*break*/, 23];
+                    case 21: return [4 /*yield*/, SyncServiceHelper_1.SyncServiceHelper.BatchQueryApi(stageUrl + 'batchquery', token, sql, this.log)];
+                    case 22:
+                        res = _a.sent();
+                        _a.label = 23;
+                    case 23:
                         // offset = offset + this.limitData;
                         // this.log.warn("Offset: " + offset);
                         /** check loop ends */
                         // if (rowsLength < this.limitData) {
                         this.log.debug("completed batch data ...");
                         isChunkEnd = true;
-                        return [3 /*break*/, 13];
-                    case 12:
+                        return [3 /*break*/, 25];
+                    case 24:
                         isTableUpdated = false;
                         this.log.debug("No data found...");
                         isChunkEnd = true;
-                        _a.label = 13;
-                    case 13:
+                        _a.label = 25;
+                    case 25:
                         this.log.info("************* ***** *************");
                         // }
                         this.log.debug(":::::::::::::::::::UPDATE " + sync.id + " START ::::::::::::::::::::::");
                         updateQuery = null;
-                        if (!(isTableUpdated == true)) return [3 /*break*/, 15];
+                        if (!(isTableUpdated == true)) return [3 /*break*/, 30];
                         lastUpdateDateQuery = "select " + sync.sync_column + ", " + sync.map_pk + " from " + sync.map_table + " where " + sync.cond + " and " + sync.sync_column + " is not null and " + sync.sync_column + " <= now()  order by " + sync.sync_column + " desc limit 1 ";
                         this.log.info("lastUpdateDateQuery:=>>>>>>  " + ("" + lastUpdateDateQuery));
+                        lastUpdateDateData = void 0;
+                        if (!(dbSourceCond == 'STAGING')) return [3 /*break*/, 27];
+                        this.log.info("%%%%%%% targetDb %%%%%%%%");
+                        this.log.info(targetDb);
+                        this.log.info("%%%%%%% targetDb %%%%%%%%");
                         return [4 /*yield*/, SyncServiceHelper_1.SyncServiceHelper.ExecuteQuery(targetDb, lastUpdateDateQuery, this.log)];
-                    case 14:
+                    case 26:
                         lastUpdateDateData = _a.sent();
+                        return [3 /*break*/, 29];
+                    case 27: return [4 /*yield*/, SyncServiceHelper_1.SyncServiceHelper.ExecuteQueryApi(stageUrl + 'executequery', token, sync.map_table, sql, this.log)];
+                    case 28:
+                        lastUpdateDateData = _a.sent();
+                        _a.label = 29;
+                    case 29:
                         lastUpdate = lastUpdateDateData && lastUpdateDateData.rows.length > 0 ? eval("lastUpdateDateData.rows[0]['" + sync.sync_column + "']") : lastUpdate;
                         lastUpdateId = lastUpdateDateData && lastUpdateDateData.rows.length > 0 ? eval("lastUpdateDateData.rows[0]['" + sync.map_pk + "']") : 'dummyId';
-                        this.log.info("************* ***** *************\" + " + lastUpdateId);
+                        this.log.info("************* ***** *************\" + " + lastUpdateId + " + " + lastUpdate);
                         updateQuery = "update sync_table set last_update = '" + (lastUpdate && lastUpdate != 'NULL' && lastUpdate != 'null' ? lastUpdate : currentTime) + "', updated_on = '" + currentTime + "', last_updated_id = '" + lastUpdateId + "'  where id='" + sync.id + "'";
-                        return [3 /*break*/, 16];
-                    case 15:
+                        return [3 /*break*/, 31];
+                    case 30:
                         updateQuery = "update sync_table set  updated_on = '" + currentTime + "'  where id='" + sync.id + "'";
-                        _a.label = 16;
-                    case 16: return [4 /*yield*/, SyncServiceHelper_1.SyncServiceHelper.BatchQuery(updateSyncConfig, [updateQuery], this.log)];
-                    case 17:
+                        _a.label = 31;
+                    case 31: 
+                    // await SyncServiceHelper.BatchQuery(updateSyncConfig, [updateQuery], this.log);
+                    return [4 /*yield*/, SyncServiceHelper_1.SyncServiceHelper.BatchQueryApi(layeredUrl + 'batchquery', token, [updateQuery], this.log)];
+                    case 32:
+                        // await SyncServiceHelper.BatchQuery(updateSyncConfig, [updateQuery], this.log);
                         _a.sent();
                         this.log.debug(":::::::::::::::::::UPDATE " + sync.id + " END ::::::::::::::::::::::\n\n");
-                        return [3 /*break*/, 21];
-                    case 18:
+                        return [3 /*break*/, 36];
+                    case 33:
                         err_2 = _a.sent();
                         this.log.warn(":::::::::::::::::::CATCH BLOCK START ::::::::::::::::::::::");
                         this.log.error(err_2);
@@ -306,17 +388,19 @@ var SyncDMLService = /** @class */ (function () {
                         else {
                             updateQuery = "update sync_table set updated_on = '" + currentTime + "'  where id='" + sync.id + "'";
                         }
-                        return [4 /*yield*/, SyncServiceHelper_1.SyncServiceHelper.BatchQuery(updateSyncConfig, [updateQuery], this.log)];
-                    case 19:
+                        // await SyncServiceHelper.BatchQuery(updateSyncConfig, [updateQuery], this.log);
+                        return [4 /*yield*/, SyncServiceHelper_1.SyncServiceHelper.BatchQueryApi(layeredUrl + 'batchquery', token, [updateQuery], this.log)];
+                    case 34:
+                        // await SyncServiceHelper.BatchQuery(updateSyncConfig, [updateQuery], this.log);
                         _a.sent();
                         return [4 /*yield*/, SyncServiceHelper_1.SyncServiceHelper.ErrorMessage("DML", err_2, this.log)];
-                    case 20:
+                    case 35:
                         _a.sent();
                         this.log.warn(":::::::::::::::::::CATCH BLOCK ENDS ::::::::::::::::::::::");
                         // throw err;
                         this.log.error(err_2);
-                        return [3 /*break*/, 21];
-                    case 21: return [2 /*return*/];
+                        return [3 /*break*/, 36];
+                    case 36: return [2 /*return*/];
                 }
             });
         });

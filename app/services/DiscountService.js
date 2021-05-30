@@ -546,7 +546,6 @@ var DiscountService = /** @class */ (function () {
                                         j = _d[_f];
                                         i = reqData.selectedItems.indexOf(freeItems[j]);
                                         reqData.selectedItems[i].appliedDiscounts = [];
-                                        reqData.selectedItems[i].isItemFree = false;
                                         if (!(isCashDisc || isTotalDiscount)) return [3 /*break*/, 14];
                                         return [4 /*yield*/, this_1.totalDiscount(reqData.selectedItems[i], reqData, checkDiscounts, totalPercentage)];
                                     case 13:

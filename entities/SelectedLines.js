@@ -22,6 +22,10 @@ var SelectedLines = /** @class */ (function () {
         __metadata("design:type", Object)
     ], SelectedLines.prototype, "lines", void 0);
     __decorate([
+        typeorm_1.Column({ name: "inventlocationid" }),
+        __metadata("design:type", String)
+    ], SelectedLines.prototype, "inventlocationid", void 0);
+    __decorate([
         typeorm_1.Column({ name: "created_on" }),
         __metadata("design:type", Date)
     ], SelectedLines.prototype, "createdOn", void 0);

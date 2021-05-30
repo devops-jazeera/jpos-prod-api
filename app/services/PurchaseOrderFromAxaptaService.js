@@ -310,9 +310,46 @@ var PurchaseOrderFromAxaptaService = /** @class */ (function () {
             });
         });
     };
+    PurchaseOrderFromAxaptaService.prototype.getAgentPurchaseOrder = function (purchID) {
+        return __awaiter(this, void 0, void 0, function () {
+            var url, reqData, data, axaptaData, error_5;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        url = Props_1.Props._URL + "agentpurchaseorder";
+                        console.log("axpta url :  ", url);
+                        this.axios.defaults.headers["Authorization"] = Props_1.Props._TOKEN;
+                        console.log(this.axios.defaults.headers);
+                        reqData = {
+                            data: {
+                                purchID: purchID
+                            },
+                        };
+                        return [4 /*yield*/, this.axios.post(url, reqData)];
+                    case 1:
+                        data = _a.sent();
+                        console.log(Object.keys(data));
+                        if (data.error) {
+                            throw data.error.message;
+                        }
+                        else {
+                            axaptaData = data.data;
+                            console.log(axaptaData);
+                            return [2 /*return*/, axaptaData.data];
+                        }
+                        return [3 /*break*/, 3];
+                    case 2:
+                        error_5 = _a.sent();
+                        throw { status: 0, message: error_5 };
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
     PurchaseOrderFromAxaptaService.prototype.getAgentOrder = function (purchaseID) {
         return __awaiter(this, void 0, void 0, function () {
-            var axaptaData, error_5;
+            var axaptaData, error_6;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -326,48 +363,36 @@ var PurchaseOrderFromAxaptaService = /** @class */ (function () {
                     case 3: throw { status: 0, message: "ORDER_NOT_RELATED_TO_THIS_STORE" };
                     case 4: return [3 /*break*/, 6];
                     case 5:
-                        error_5 = _a.sent();
-                        throw error_5;
+                        error_6 = _a.sent();
+                        throw error_6;
                     case 6: return [2 /*return*/];
                 }
             });
         });
     };
-    PurchaseOrderFromAxaptaService.prototype.getAgentPurchaseOrder = function (purchID) {
-        return __awaiter(this, void 0, void 0, function () {
-            var token, url, data, error_6;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 3, , 4]);
-                        return [4 /*yield*/, this.getToken()];
-                    case 1:
-                        token = _a.sent();
-                        console.log(token);
-                        url = Props_1.Props.AXAPTA_URL + ("AgentPurchaseOrder?purchID=" + purchID);
-                        console.log("axpta url :  ", url);
-                        this.axios.defaults.headers["Token"] = token;
-                        console.log(this.axios.defaults.headers);
-                        return [4 /*yield*/, this.axios.get(url)];
-                    case 2:
-                        data = _a.sent();
-                        console.log(Object.keys(data));
-                        console.log();
-                        return [2 /*return*/, data.data];
-                    case 3:
-                        error_6 = _a.sent();
-                        throw { status: 0, message: error_6.response.data.Message };
-                    case 4: return [2 /*return*/];
-                }
-            });
-        });
-    };
+    // async getAgentPurchaseOrder(purchID: string) {
+    //   try {
+    //     let token = await this.getToken();
+    //     console.log(token);
+    //     let url = Props.AXAPTA_URL + `AgentPurchaseOrder?purchID=${purchID}`;
+    //     console.log("axpta url :  ", url);
+    //     this.axios.defaults.headers["Token"] = token;
+    //     console.log(this.axios.defaults.headers);
+    //     let data = await this.axios.get(url);
+    //     console.log(Object.keys(data));
+    //     console.log();
+    //     return data.data;
+    //   } catch (error) {
+    //     throw { status: 0, message: error.response.data.Message };
+    //   }
+    // }
     PurchaseOrderFromAxaptaService.prototype.mapAgentpurcaseOrder = function (data) {
         return __awaiter(this, void 0, void 0, function () {
             var salesData, custAccount, customer, salesLine;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
+                        console.log(data);
                         salesData = {};
                         salesData.salesId = data.purch_id;
                         salesData.salesName = data.cust_name;

@@ -82,7 +82,6 @@ var healthCheck = function () {
     healthCount = healthCount + 1;
 };
 var healthCount = 0;
-var sysService = new SysService_1.SysService();
 var checkInternet = function () { return __awaiter(_this, void 0, void 0, function () {
     return __generator(this, function (_a) {
         return [2 /*return*/, dns
