@@ -190,7 +190,7 @@ var SyncServiceHelper = /** @class */ (function () {
                         //     ? await SyncServiceHelper.LocalPool.connect()
                         //     : await SyncServiceHelper.StagePool.connect();
                         res = _a.sent();
-                        console.log(res);
+                        log.info(res.rows[0]);
                         return [2 /*return*/, { metaData: res.fields, rows: res.rows }];
                     case 4:
                         e_3 = _a.sent();
@@ -215,7 +215,7 @@ var SyncServiceHelper = /** @class */ (function () {
     };
     SyncServiceHelper.BatchQueryApi = function (url, token, sqls, log) {
         return __awaiter(this, void 0, void 0, function () {
-            var reqData, data, e_4;
+            var location_1, reqData, data, e_4;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -226,9 +226,11 @@ var SyncServiceHelper = /** @class */ (function () {
                     case 1:
                         _a.trys.push([1, 3, , 4]);
                         axios.defaults.headers["Authorization"] = token;
+                        location_1 = process.env.ENV_STORE_ID;
                         reqData = {
                             data: {
                                 data: sqls,
+                                storeid: location_1
                             },
                         };
                         return [4 /*yield*/, axios.post(url, reqData)];
@@ -236,8 +238,8 @@ var SyncServiceHelper = /** @class */ (function () {
                         data = _a.sent();
                         data = data.data;
                         if (data.error) {
-                            console.log(data.error);
-                            log.error(data.error.message);
+                            log.error(data.error);
+                            throw data.error.message;
                         }
                         else {
                             return [2 /*return*/, data];
@@ -247,7 +249,7 @@ var SyncServiceHelper = /** @class */ (function () {
                         e_4 = _a.sent();
                         log.error(e_4);
                         log.info(sqls);
-                        return [3 /*break*/, 4];
+                        throw e_4;
                     case 4:
                         log.info("-------------- Batch Query Ends --------------");
                         return [2 /*return*/];
@@ -257,7 +259,7 @@ var SyncServiceHelper = /** @class */ (function () {
     };
     SyncServiceHelper.ExecuteQueryApi = function (url, token, map_table, sql, log) {
         return __awaiter(this, void 0, void 0, function () {
-            var showLog, res, reqData, data, e_5;
+            var showLog, res, location, reqData, data, e_5;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -271,6 +273,7 @@ var SyncServiceHelper = /** @class */ (function () {
                         if (showLog)
                             log.debug(sql);
                         res = null;
+                        location = process.env.ENV_STORE_ID;
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 3, 4, 5]);
@@ -278,7 +281,8 @@ var SyncServiceHelper = /** @class */ (function () {
                         reqData = {
                             data: {
                                 query: sql,
-                                table: map_table
+                                table: map_table,
+                                storeid: location
                             },
                         };
                         return [4 /*yield*/, axios.post(url, reqData)];

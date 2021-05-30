@@ -266,6 +266,7 @@ var SyncDMLService = /** @class */ (function () {
                         return [4 /*yield*/, SyncServiceHelper_1.SyncServiceHelper.ExecuteQuery(targetDb, sql, this.log)];
                     case 8:
                         res = _a.sent();
+                        this.log.info(res.rows[0]);
                         return [3 /*break*/, 11];
                     case 9: return [4 /*yield*/, SyncServiceHelper_1.SyncServiceHelper.ExecuteQueryApi(stageUrl + 'executequery', token, sync.map_table, sql, this.log)];
                     case 10:
@@ -277,7 +278,7 @@ var SyncDMLService = /** @class */ (function () {
                         metaDataTable = void 0;
                         if (!(dbSourceCond == 'STAGING')) return [3 /*break*/, 13];
                         this.log.info("%%%%%%% MetadataTable STAGING  %%%%%%%%");
-                        this.log.info(sourceDb);
+                        // this.log.info(sourceDb)
                         sourceDb = SyncServiceHelper_1.SyncServiceHelper.StageDBOptions();
                         this.log.info(sourceDb);
                         return [4 /*yield*/, SyncServiceHelper_1.SyncServiceHelper.MetadataTableApi(stageUrl + 'executequery', token, sourceDb, sync.map_table, this.log)];
@@ -286,11 +287,11 @@ var SyncDMLService = /** @class */ (function () {
                         return [3 /*break*/, 15];
                     case 13:
                         this.log.info("%%%%%%% MetadataTable " + dbSourceCond + "  %%%%%%%%");
-                        this.log.info(targetDb);
+                        // this.log.info(targetDb)
                         if (targetDb && !targetDb.host) {
                             targetDb = SyncServiceHelper_1.SyncServiceHelper.LocalDBOptions();
                         }
-                        this.log.info(targetDb);
+                        // this.log.info(targetDb)
                         this.log.info("%%%%%%% MetadataTable %%%%%%%%");
                         return [4 /*yield*/, SyncServiceHelper_1.SyncServiceHelper.MetadataTable(targetDb, sync.map_table)];
                     case 14:
@@ -322,7 +323,7 @@ var SyncDMLService = /** @class */ (function () {
                     case 20:
                         _a.sent();
                         return [3 /*break*/, 23];
-                    case 21: return [4 /*yield*/, SyncServiceHelper_1.SyncServiceHelper.BatchQueryApi(stageUrl + 'batchquery', token, sql, this.log)];
+                    case 21: return [4 /*yield*/, SyncServiceHelper_1.SyncServiceHelper.BatchQueryApi(stageUrl + 'batchquery', token, batchSql, this.log)];
                     case 22:
                         res = _a.sent();
                         _a.label = 23;
@@ -350,17 +351,18 @@ var SyncDMLService = /** @class */ (function () {
                         lastUpdateDateData = void 0;
                         if (!(dbSourceCond == 'STAGING')) return [3 /*break*/, 27];
                         this.log.info("%%%%%%% targetDb %%%%%%%%");
-                        this.log.info(targetDb);
-                        this.log.info("%%%%%%% targetDb %%%%%%%%");
                         return [4 /*yield*/, SyncServiceHelper_1.SyncServiceHelper.ExecuteQuery(targetDb, lastUpdateDateQuery, this.log)];
                     case 26:
+                        // this.log.info(targetDb)
+                        // this.log.info(`%%%%%%% targetDb %%%%%%%%`)
                         lastUpdateDateData = _a.sent();
                         return [3 /*break*/, 29];
-                    case 27: return [4 /*yield*/, SyncServiceHelper_1.SyncServiceHelper.ExecuteQueryApi(stageUrl + 'executequery', token, sync.map_table, sql, this.log)];
+                    case 27: return [4 /*yield*/, SyncServiceHelper_1.SyncServiceHelper.ExecuteQueryApi(stageUrl + 'executequery', token, sync.map_table, lastUpdateDateQuery, this.log)];
                     case 28:
                         lastUpdateDateData = _a.sent();
                         _a.label = 29;
                     case 29:
+                        this.log.info(lastUpdateDateData);
                         lastUpdate = lastUpdateDateData && lastUpdateDateData.rows.length > 0 ? eval("lastUpdateDateData.rows[0]['" + sync.sync_column + "']") : lastUpdate;
                         lastUpdateId = lastUpdateDateData && lastUpdateDateData.rows.length > 0 ? eval("lastUpdateDateData.rows[0]['" + sync.map_pk + "']") : 'dummyId';
                         this.log.info("************* ***** *************\" + " + lastUpdateId + " + " + lastUpdate);
