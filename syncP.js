@@ -14,3 +14,9 @@ var CallSync = function () {
     }
 };
 CallSync();
+process.on("uncaughtException", function (err) {
+    Log_1.ulog.error("Sync Caught exception: " + err);
+    setTimeout(function () {
+        // CallSync();
+    }, 10000);
+});

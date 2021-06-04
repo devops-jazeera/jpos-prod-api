@@ -52,7 +52,7 @@ exports.dbOptions = {
     entities: [__dirname + "/../entities/**/*{.ts,.js}"],
     connectTimeoutMS: 0,
     extra: {
-        max: 25,
+        max: 10,
         min: 5,
         idleTimeoutMillis: 0,
         connectionTimeoutMillis: 0,
@@ -67,7 +67,7 @@ exports.stageDbOptions = {
     username: "xxxx",
     password: "xxxx",
     database: "xxxx",
-    max: 25,
+    max: 5,
     idleTimeoutMillis: 0,
     slaves: ""
 };
@@ -79,7 +79,7 @@ exports.syncStageDbOptions = {
     username: "xxxx",
     password: "xxxx",
     database: "xxxx",
-    max: 25,
+    max: 5,
     idleTimeoutMillis: 0,
     slaves: ""
 };
@@ -180,6 +180,10 @@ exports.setSyncUrl = function () {
         console.error(error);
     }
 };
+exports.baseAuth = {
+    user: "xxxx",
+    password: "xxxxx",
+};
 exports.DbEnvConfig = function () { return __awaiter(_this, void 0, void 0, function () {
     var redeem, ecommerce, syncApi, token, testStoreIds, smsCred;
     return __generator(this, function (_a) {
@@ -205,6 +209,13 @@ exports.DbEnvConfig = function () { return __awaiter(_this, void 0, void 0, func
                 return [4 /*yield*/, RawQuery_1.RawQuery.ConstData("SMS_NOTIFICATION_IN_SYNC")];
             case 7:
                 exports.SMS_NOIFICATION = _a.sent();
+                return [4 /*yield*/, RawQuery_1.RawQuery.ConstData("BASE_AUTH")];
+            case 8:
+                exports.baseAuth = _a.sent();
+                return [4 /*yield*/, RawQuery_1.RawQuery.ConstData("SYNC_SERVICE_API")];
+            case 9:
+                exports.syncConfig = _a.sent();
+                console.log("syncConfig:\n", exports.syncConfig);
                 Props_1.Props.AXAPTA_URL = redeem.url;
                 Props_1.Props.REDEEM_URL = redeem.url + "Authenticate";
                 Props_1.Props.REDEEM_CLIENT_ID = redeem.username;
@@ -217,10 +228,10 @@ exports.DbEnvConfig = function () { return __awaiter(_this, void 0, void 0, func
                 Props_1.Props.SMS_USER = smsCred.user;
                 Props_1.Props.SMS_PASS = smsCred.pass;
                 return [4 /*yield*/, RawQuery_1.RawQuery.ConstData("MAIL")];
-            case 8:
+            case 10:
                 exports.mailOptions = _a.sent();
                 return [4 /*yield*/, RawQuery_1.RawQuery.ConstData("SALES_CHECK")];
-            case 9:
+            case 11:
                 exports.SALES_CHECK = _a.sent();
                 console.log(exports.SALES_CHECK);
                 return [2 /*return*/];

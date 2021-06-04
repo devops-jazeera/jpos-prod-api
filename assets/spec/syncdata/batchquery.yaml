@@ -1,0 +1,20 @@
+/syncdata/batchquery:
+  post:
+    tags:
+      - Sync Data
+    description: save.
+    parameters:
+      - name: body
+        in: body
+        schema:
+          type: object
+          properties:
+            data:
+              type: object
+              properties:
+                query:
+                  type: string
+                  example: ["insert into table(id) values ('1')", "update table set column='data' where id=1"]
+    responses:
+      200:
+        description: "status:1 is success; status: 0 is failure;"

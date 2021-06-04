@@ -82,8 +82,8 @@ var SyncDDLService = /** @class */ (function () {
                         return [3 /*break*/, 5];
                     case 4:
                         error_1 = _a.sent();
-                        log.error(error_1);
-                        return [3 /*break*/, 5];
+                        log.error("execute query error -------", error_1);
+                        throw error_1;
                     case 5: return [2 /*return*/];
                 }
             });
@@ -225,7 +225,7 @@ var SyncDDLService = /** @class */ (function () {
                     case 24:
                         err_3 = _b.sent();
                         log.error(err_3);
-                        return [3 /*break*/, 25];
+                        throw err_3;
                     case 25: return [2 /*return*/];
                 }
             });

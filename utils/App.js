@@ -225,9 +225,29 @@ var App = /** @class */ (function () {
     App.DecodeJWT = function (token) {
         if (token && token != null && token != "null") {
             try {
-                token = token.includes(" ") ? token.replace("jwt ", "").replace("JWT ", "") : token;
-                var userInfo_1 = jwt.verify(token, Props_1.Props._TOKEN);
-                return userInfo_1;
+                var baseAuth = Buffer.from(token, "base64");
+                if (baseAuth && baseAuth.length < 100) {
+                    baseAuth = baseAuth.toString();
+                    var _a = baseAuth.split(":"), user = _a[0], password = _a[1];
+                    // console.log(token, user, password, Config.baseAuth);
+                    if (user && password && user == Config.baseAuth.user && password == Config.baseAuth.password) {
+                        return {
+                            identity: {
+                                id: Config.baseAuth.user,
+                                vid: "own",
+                                baseAuth: true,
+                            },
+                        };
+                    }
+                    else {
+                        throw { name: "error", message: "Token is not valid" };
+                    }
+                }
+                else {
+                    token = token.includes(" ") ? token.replace("jwt ", "").replace("JWT ", "") : token;
+                    var userInfo_1 = jwt.verify(token, Props_1.Props._TOKEN);
+                    return userInfo_1;
+                }
             }
             catch (err) {
                 Log_1.log.error("--------- token error ------------->");
@@ -317,6 +337,30 @@ var App = /** @class */ (function () {
                 }
             });
         });
+    };
+    App.ValildateBaseAuth = function (data, baseAuth) {
+        console.log("Base Authorization ", data);
+        if (data) {
+            if (data.name && data.message && data.name.lowercase().indexOf("error") > -1) {
+                return false;
+            }
+            else {
+                if (data.baseAuth != null) {
+                    if (data.baseAuth == true && baseAuth == true) {
+                        return true;
+                    }
+                    else {
+                        return false;
+                    }
+                }
+                else {
+                    return true;
+                }
+            }
+        }
+        else {
+            return false;
+        }
     };
     App.DaysBack = function (date, backValue, isDays) {
         if (isDays === void 0) { isDays = true; }

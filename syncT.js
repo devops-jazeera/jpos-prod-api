@@ -10,7 +10,7 @@ var CallSync = function () {
         // syncService = new SyncService("F");
     }
     catch (err) {
-        Log_1.ulog.error("SyncService D Error: ");
+        Log_1.ulog.error("SyncService P Error: ");
         Log_1.ulog.error(err);
     }
 };
