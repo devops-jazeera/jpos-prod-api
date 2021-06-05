@@ -229,7 +229,7 @@ var SyncDMLService = /** @class */ (function () {
                     case 2:
                         utcDate = _a.sent();
                         utcDateTime = utcDate.rows[0]["utc_date"];
-                        currentTime = moment().toISOString();
+                        currentTime = new Date().toISOString();
                         this.log.info("Db Date: " + utcDateTime);
                         this.log.info("currentTime Date: " + currentTime);
                         _a.label = 3;
