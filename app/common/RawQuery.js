@@ -833,9 +833,10 @@ var RawQuery = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        query = "select itemcode, accountcode, itemrelation, percent1 from pricedisctable where module=1 and \n        itemcode in (0,1) and accountcode in(0,1,2)  and dataareaid='" + dataareaid + "' and \n        (accountrelation='" + accountrelation + "' or accountrelation='" + custaccount + "' )";
+                        query = "select itemcode, accountcode, itemrelation, percent1 from pricedisctable where module=1 and \n        itemcode in (0,1) and accountcode in(1,2)  and dataareaid='" + dataareaid + "' and \n        (accountrelation='" + accountrelation + "' or accountrelation='" + custaccount + "' )";
                         currency = currency ? currency : "SAR";
                         query += " and currency = '" + currency + "' ";
+                        console.log(query);
                         return [4 /*yield*/, this.db.query(query)];
                     case 1:
                         data = _a.sent();

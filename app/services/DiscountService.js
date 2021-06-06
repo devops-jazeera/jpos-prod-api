@@ -224,6 +224,7 @@ var DiscountService = /** @class */ (function () {
                                 linePercentage = linePercentage ? linePercentage.percent1 : 0;
                             });
                         }
+                        console.log(linePercentageData);
                         return [4 /*yield*/, this.rawQuery.getMultiDiscRanges(discounts[0].multilinedisc, reqData.currency, this.sessionInfo.dataareaid)];
                     case 4:
                         multilineDiscRanges = _b.sent();
