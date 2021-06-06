@@ -104,7 +104,7 @@ var run = function () { return __awaiter(_this, void 0, void 0, function () {
                             Log_1.log.warn("sync Time Diff:", diff);
                             if (diff > 5) {
                                 Log_1.log.error("----->: sync time start : " + diff);
-                                // sync();
+                                sync();
                             }
                         }
                         next();

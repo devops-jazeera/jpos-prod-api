@@ -52,110 +52,6 @@ var STAGING_ID = "STAGING";
 var STORE_ID = process.env.ENV_STORE_ID || "LOCAL-TEST";
 var SyncDMLService = /** @class */ (function () {
     function SyncDMLService(slog) {
-        // async syncDb(sourceDb: any, targetDb: any, token:string, sync: any, currentTime: string) {
-        //   //console.table(sync);
-        //   //if (sync.source_id != STAGING_ID || sync.source_id == STAGING_ID) throw "simple throw";
-        //   let updateSyncConfig = SyncServiceHelper.LayeredStageDBOptions();
-        //   let batchSql: any[] = [];
-        //   let sql: any;
-        //   let isChunkEnd = false;
-        //   let offset: number = 0;
-        //   let isTableUpdated = true;
-        //   let lastUpdate = currentTime;
-        //   //let lastUpdate = await this.buildLastUpdatedDate(sourceDb, sync);
-        //   this.log.info("************* Last Update: " + lastUpdate + " *************");
-        //   try {
-        //     let rowsAvalible: any = null;
-        //     let rowsNotAvalible: any = null;
-        //     while (isChunkEnd == false) {
-        //       this.log.info("************* ***** *************");
-        //       rowsAvalible = null;
-        //       rowsNotAvalible = null;
-        //       batchSql = [];
-        //       sql = this.buildDMLSelectQuery(sync, offset, currentTime);
-        //       const soruceRes: any = await SyncServiceHelper.ExecuteQueryApi(sourceDb+'executequery',token, sync.map_table, sql, this.log);
-        //       if (soruceRes && soruceRes.rows.length != 0) {
-        //         let rowsLength = soruceRes.rows.length;
-        //         let primaryKeys = soruceRes.rows.map((ele: any) => ele[sync.map_pk]);
-        //         sql = await SyncServiceHelper.ChackAvalibleQuery(
-        //           sync.map_table,
-        //           soruceRes.metaData,
-        //           primaryKeys,
-        //           sync.map_pk,
-        //           this.log
-        //         );
-        //         let res: any = await SyncServiceHelper.ExecuteQueryApi(targetDb+'executequery', token, sync.map_table, sql, this.log);
-        //         rowsAvalible = res.rows.map((ele: any) => ele[sync.map_pk]);
-        //         rowsNotAvalible = primaryKeys.filter((ele: any) => rowsAvalible.indexOf(ele) < 0);
-        //         this.log.debug("\t\tUpdate Records: " + sync.map_table + " --> " + rowsAvalible.length);
-        //         this.log.debug("\t\tInsert Records: " + sync.map_table + " --> " + rowsNotAvalible.length);
-        //         let metaDataTable: any = await SyncServiceHelper.MetadataTable(targetDb, sync.map_table);
-        //         if (rowsAvalible && rowsAvalible.length > 0) {
-        //           sql = await SyncServiceHelper.PrepareQuery(
-        //             sync.map_table,
-        //             metaDataTable,
-        //             soruceRes.rows,
-        //             rowsAvalible,
-        //             "UPDATE",
-        //             sync.map_pk,
-        //             this.log
-        //           );
-        //           batchSql.push(sql);
-        //         }
-        //         if (rowsNotAvalible && rowsNotAvalible.length > 0) {
-        //           sql = await SyncServiceHelper.PrepareQuery(
-        //             sync.map_table,
-        //             metaDataTable,
-        //             soruceRes.rows,
-        //             rowsNotAvalible,
-        //             "INSERT",
-        //             sync.map_pk,
-        //             this.log
-        //           );
-        //           batchSql.push(sql);
-        //         }
-        //         if (batchSql && batchSql.length > 0) {
-        //           //TODO:
-        //           // await SyncServiceHelper.BatchQueryApi(targetDb+'batchquery', batchSql, this.log);
-        //         }
-        //         offset = offset + this.limitData;
-        //         this.log.warn("Offset: " + offset);
-        //         /** check loop ends */
-        //         if (rowsLength < this.limitData) {
-        //           this.log.debug("completed batch data ...");
-        //           isChunkEnd = true;
-        //         }
-        //       } else {
-        //         isTableUpdated = false;
-        //         this.log.debug("No data found...");
-        //         isChunkEnd = true;
-        //       }
-        //       this.log.info("************* ***** *************");
-        //     }
-        //     this.log.debug(":::::::::::::::::::UPDATE " + sync.id + " START ::::::::::::::::::::::");
-        //     let updateQuery = null;
-        //     if (isTableUpdated == true) {
-        //       updateQuery = `update sync_table set last_update = '${lastUpdate}', updated_on = '${currentTime}'  where id='${sync.id}'`;
-        //     } else {
-        //       updateQuery = `update sync_table set  updated_on = '${currentTime}'  where id='${sync.id}'`;
-        //     }
-        //     await SyncServiceHelper.BatchQuery(updateSyncConfig, [updateQuery], this.log);
-        //     this.log.debug(":::::::::::::::::::UPDATE " + sync.id + " END ::::::::::::::::::::::\n\n");
-        //   } catch (err) {
-        //     this.log.warn(":::::::::::::::::::CATCH BLOCK START ::::::::::::::::::::::");
-        //     this.log.error(err);
-        //     let updateQuery = null;
-        //     if (err == Props.RECORD_NOT_FOUND) {
-        //       updateQuery = `update sync_table set updated_on = '${currentTime}'  where id='${sync.id}'`;
-        //     } else {
-        //       updateQuery = `update sync_table set updated_on = '${currentTime}'  where id='${sync.id}'`;
-        //     }
-        //     await SyncServiceHelper.BatchQuery(updateSyncConfig, [updateQuery], this.log);
-        //     await SyncServiceHelper.ErrorMessage("DML", err, this.log);
-        //     this.log.warn(":::::::::::::::::::CATCH BLOCK ENDS ::::::::::::::::::::::");
-        //     throw err;
-        //   }
-        // }
         this.limitData = 200;
         Config.setEnvConfig();
         this.log = slog;
@@ -229,7 +125,7 @@ var SyncDMLService = /** @class */ (function () {
                     case 2:
                         utcDate = _a.sent();
                         utcDateTime = utcDate.rows[0]["utc_date"];
-                        currentTime = new Date().toISOString();
+                        currentTime = utcDate.rows[0]["utc_date"];
                         this.log.info("Db Date: " + utcDateTime);
                         this.log.info("currentTime Date: " + currentTime);
                         _a.label = 3;
@@ -400,6 +296,15 @@ var SyncDMLService = /** @class */ (function () {
                         updateQuery = [];
                         updateQuery.push("update sync_table set cache_done = false, cache_restart=true  where id='" + sync.id + "'");
                         if (isDataFound) {
+                            // let lastUpdateDateQuery = `select ${sync.sync_column}, ${sync.map_pk} from ${sync.map_table} where ${sync.cond} and ${sync.sync_column} is not null and ${sync.sync_column} <= now()  order by ${sync.sync_column} desc limit 1 `
+                            // this.log.info("lastUpdateDateQuery:=>>>>>>  " +`${lastUpdateDateQuery}`)
+                            // let lastUpdateDateData: any
+                            //   lastUpdateDateData = await SyncServiceHelper.ExecuteQueryApi(targetDb+'executequery', token, sync.map_table, lastUpdateDateQuery, this.log)
+                            // this.log.info(lastUpdateDateData)
+                            // lastUpdate =  lastUpdateDateData && lastUpdateDateData.rows.length>0 ? eval(`lastUpdateDateData.rows[0]['${sync.sync_column}']`) : lastUpdate
+                            // let lastUpdateId = lastUpdateDateData && lastUpdateDateData.rows.length>0 ? eval(`lastUpdateDateData.rows[0]['${sync.map_pk}']`) : 'dummyId'
+                            // this.log.info(`************* ***** *************" + ${lastUpdateId} + ${lastUpdate}`)
+                            // updateQuery.push(`update sync_table set last_update = '${lastUpdate  && lastUpdate !='NULL' && lastUpdate != 'null' ? lastUpdate: currentTime }', updated_on = '${currentTime}', last_updated_id = '${lastUpdateId}'  where id='${sync.id}'`);
                             updateQuery.push("update sync_table set last_update = '" + lastUpdate + "', updated_on = '" + currentTime + "'  where id='" + sync.id + "'");
                         }
                         else {
