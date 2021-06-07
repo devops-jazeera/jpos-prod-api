@@ -265,11 +265,12 @@ var SyncService = /** @class */ (function () {
     };
     SyncService.prototype.priority1 = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var isPriorityProceed, toggleSync;
+            var isPriorityProceed, toggleSync, count;
             var _this = this;
             return __generator(this, function (_a) {
                 isPriorityProceed = true;
                 toggleSync = "T";
+                count = 1;
                 cron.schedule("*/11 * * * * *", function () { return __awaiter(_this, void 0, void 0, function () {
                     var error_4;
                     return __generator(this, function (_a) {
@@ -279,7 +280,7 @@ var SyncService = /** @class */ (function () {
                                 toggleSync = toggleSync == "M" ? "T" : "M";
                                 if (!(isPriorityProceed == true)) return [3 /*break*/, 5];
                                 isPriorityProceed = false;
-                                this.log.debug("(((((((((( SYNC START PRIORITY 1))))))))))");
+                                this.log.debug("(((((((((( SYNC START PRIORITY ))))))))))");
                                 return [4 /*yield*/, this.checkInternet()];
                             case 1:
                                 if (!_a.sent()) return [3 /*break*/, 3];
@@ -291,23 +292,27 @@ var SyncService = /** @class */ (function () {
                                 this.log.warn(">>>>>>>>>>>>>>>>> No Internet connection <<<<<<<<<<<<<<<<<<<<");
                                 _a.label = 4;
                             case 4:
-                                this.log.debug("(((((((((( SYNC CLOSE PRIORITY 1))))))))))");
+                                this.log.debug("(((((((((( SYNC CLOSE PRIORITY ))))))))))");
                                 isPriorityProceed = true;
                                 return [3 /*break*/, 6];
                             case 5:
-                                this.log.warn("PRIORITY 1 still processing ...................................");
-                                if (SyncServiceHelper_1.SyncServiceHelper.isDbError == true) {
-                                    SyncServiceHelper_1.SyncServiceHelper.isDbError = false;
-                                    throw { message: "db connection error" };
+                                if (count > 10) {
+                                    isPriorityProceed = true;
+                                    count = 1;
+                                }
+                                else {
+                                    this.log.warn("PRIORITY still processing ...................................");
+                                    count += 1;
                                 }
                                 _a.label = 6;
                             case 6: return [3 /*break*/, 8];
                             case 7:
                                 error_4 = _a.sent();
+                                count = 1;
                                 isPriorityProceed = true;
-                                this.log.error("--------- CRON PRIORITY 1 ERROR ---------");
+                                this.log.error("--------- CRON PRIORITY ERROR ---------");
                                 this.log.error(error_4);
-                                this.log.error("--------- CRON PRIORITY 1 ERROR ---------");
+                                this.log.error("--------- CRON PRIORITY ERROR ---------");
                                 return [3 /*break*/, 8];
                             case 8: return [2 /*return*/];
                         }
@@ -319,10 +324,11 @@ var SyncService = /** @class */ (function () {
     };
     SyncService.prototype.priority2 = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var isPriorityProceed, toggleSync;
+            var isPriorityProceed, count, toggleSync;
             var _this = this;
             return __generator(this, function (_a) {
                 isPriorityProceed = true;
+                count = 1;
                 toggleSync = "M";
                 cron.schedule("*/19 * * * * *", function () { return __awaiter(_this, void 0, void 0, function () {
                     var error_5;
@@ -349,6 +355,14 @@ var SyncService = /** @class */ (function () {
                                 isPriorityProceed = true;
                                 return [3 /*break*/, 6];
                             case 5:
+                                if (count > 10) {
+                                    isPriorityProceed = true;
+                                    count = 1;
+                                }
+                                else {
+                                    this.log.warn("PRIORITY still processing ...................................");
+                                    count += 1;
+                                }
                                 this.log.warn("PRIORITY 2 still processing ...................................");
                                 if (SyncServiceHelper_1.SyncServiceHelper.isDbError == true) {
                                     SyncServiceHelper_1.SyncServiceHelper.isDbError = false;
@@ -358,6 +372,7 @@ var SyncService = /** @class */ (function () {
                             case 6: return [3 /*break*/, 8];
                             case 7:
                                 error_5 = _a.sent();
+                                count = 1;
                                 isPriorityProceed = true;
                                 this.log.error("--------- CRON PRIORITY 2 ERROR ---------");
                                 this.log.error(error_5);

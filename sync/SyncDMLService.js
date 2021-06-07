@@ -106,7 +106,7 @@ var SyncDMLService = /** @class */ (function () {
     SyncDMLService.prototype.execute = function (type, priority) {
         if (priority === void 0) { priority = 9; }
         return __awaiter(this, void 0, void 0, function () {
-            var layeredStageDbConfig, syncUrl, stagUrl, token, localUrl, sql, utcDate, utcDateTime, currentTime, syncResults, sourceDB, targetDB, error_1;
+            var layeredStageDbConfig, syncUrl, layeredStageUrl, stagUrl, token, localUrl, sql, utcDate, utcDateTime, currentTime, syncResults, sourceDB, targetDB, error_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -117,11 +117,12 @@ var SyncDMLService = /** @class */ (function () {
                         return [4 /*yield*/, SyncServiceHelper_1.SyncServiceHelper.syncUrl()];
                     case 1:
                         syncUrl = _a.sent();
+                        layeredStageUrl = syncUrl.syncUrl + "syncdata/";
                         stagUrl = syncUrl.url + "syncdata/";
                         token = syncUrl.token;
                         localUrl = "http://localhost:5000/api/syncdata/";
                         sql = "SELECT to_char (now(), 'YYYY-MM-DD\"T\"HH24:MI:SS') as utc_date";
-                        return [4 /*yield*/, SyncServiceHelper_1.SyncServiceHelper.ExecuteQuery(layeredStageDbConfig, sql, this.log)];
+                        return [4 /*yield*/, SyncServiceHelper_1.SyncServiceHelper.ExecuteQueryApi(layeredStageUrl + 'executequery', token, 'sync_table', sql, this.log)];
                     case 2:
                         utcDate = _a.sent();
                         utcDateTime = utcDate.rows[0]["utc_date"];
@@ -141,7 +142,7 @@ var SyncDMLService = /** @class */ (function () {
                             sql = " select * from sync_table \n          where (source_id = '" + STORE_ID + "' ) \n          and active = true \n          and priority = " + priority + "\n          order by updated_on  ASC \n          limit 1";
                         }
                         this.log.info("==========================", sql);
-                        return [4 /*yield*/, SyncServiceHelper_1.SyncServiceHelper.ExecuteQuery(layeredStageDbConfig, sql, this.log)];
+                        return [4 /*yield*/, SyncServiceHelper_1.SyncServiceHelper.ExecuteQueryApi(layeredStageUrl + 'executequery', token, 'sync_table', sql, this.log)];
                     case 4:
                         syncResults = _a.sent();
                         syncResults = syncResults ? syncResults.rows : [];
@@ -185,35 +186,37 @@ var SyncDMLService = /** @class */ (function () {
     };
     SyncDMLService.prototype.cacheData = function (sourceDb, targetDb, token, sync, currentTime) {
         return __awaiter(this, void 0, void 0, function () {
-            var updateSyncConfig, isFistLoop, isChunkEnd, batchItems, rows, offset, updateQuery, lastSyncDate, lastUpdate, sql, rowsLength, isDataFound, soruceRes, metaDataTable, rows_1, err_2, updateQuery;
+            var syncUrl, layeredStageUrl, isFistLoop, isChunkEnd, batchItems, rows, offset, updateQuery, lastSyncDate, lastUpdate, sql, rowsLength, isDataFound, soruceRes, metaDataTable, rows_1, lastUpdateDateQuery, lastUpdateDateData, count, err_2, updateQuery;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        updateSyncConfig = SyncServiceHelper_1.SyncServiceHelper.LayeredStageDBOptions();
-                        _a.label = 1;
+                    case 0: return [4 /*yield*/, SyncServiceHelper_1.SyncServiceHelper.syncUrl()];
                     case 1:
-                        _a.trys.push([1, 24, , 27]);
+                        syncUrl = _a.sent();
+                        layeredStageUrl = syncUrl.syncUrl + "syncdata/";
+                        _a.label = 2;
+                    case 2:
+                        _a.trys.push([2, 26, , 29]);
                         isFistLoop = true;
                         isChunkEnd = false;
                         batchItems = [];
-                        if (!(sync.cache_restart == true)) return [3 /*break*/, 3];
+                        if (!(sync.cache_restart == true)) return [3 /*break*/, 4];
                         return [4 /*yield*/, SyncCache_1.SyncCache.setItem(sync.id + "-rows", [])];
-                    case 2:
+                    case 3:
                         _a.sent();
-                        _a.label = 3;
-                    case 3: return [4 /*yield*/, SyncCache_1.SyncCache.getItem(sync.id + "-rows")];
-                    case 4:
+                        _a.label = 4;
+                    case 4: return [4 /*yield*/, SyncCache_1.SyncCache.getItem(sync.id + "-rows")];
+                    case 5:
                         rows = _a.sent();
                         offset = rows ? rows.length : 0;
                         updateQuery = null;
                         return [4 /*yield*/, SyncCache_1.SyncCache.getItem(sync.id + "-last_date")];
-                    case 5:
+                    case 6:
                         lastSyncDate = _a.sent();
                         lastUpdate = lastSyncDate ? lastSyncDate : currentTime;
                         /** need to restart data */
                         if (offset == 0) {
                             updateQuery = "update sync_table set  cache_done = false, cache_restart=false  where id='" + sync.id + "'";
-                            SyncServiceHelper_1.SyncServiceHelper.BatchQuery(updateSyncConfig, [updateQuery], this.log);
+                            SyncServiceHelper_1.SyncServiceHelper.BatchQueryApi(layeredStageUrl + 'batchquery', token, [updateQuery], this.log);
                             offset = 0;
                         }
                         /** previous cache data retriew  */
@@ -223,40 +226,40 @@ var SyncDMLService = /** @class */ (function () {
                         sql = void 0;
                         rowsLength = 0;
                         isDataFound = false;
-                        _a.label = 6;
-                    case 6:
-                        if (!(isChunkEnd == false && sync.cache_done == false)) return [3 /*break*/, 17];
+                        _a.label = 7;
+                    case 7:
+                        if (!(isChunkEnd == false && sync.cache_done == false)) return [3 /*break*/, 18];
                         sql = this.buildDMLSelectQuery(sync, offset, lastUpdate);
                         return [4 /*yield*/, SyncServiceHelper_1.SyncServiceHelper.ExecuteQueryApi(sourceDb + "executequery", token, sync.map_table, sql, this.log)];
-                    case 7:
+                    case 8:
                         soruceRes = _a.sent();
-                        if (!(soruceRes && soruceRes.rows.length != 0)) return [3 /*break*/, 15];
+                        if (!(soruceRes && soruceRes.rows.length != 0)) return [3 /*break*/, 16];
                         rowsLength = soruceRes.rows.length;
                         this.log.warn("rowsLength: " + rowsLength);
-                        if (!(isFistLoop == true)) return [3 /*break*/, 12];
+                        if (!(isFistLoop == true)) return [3 /*break*/, 13];
                         return [4 /*yield*/, SyncCache_1.SyncCache.setItem(sync.id + "-row_metadata", soruceRes.metaData)];
-                    case 8:
+                    case 9:
                         _a.sent();
                         return [4 /*yield*/, SyncServiceHelper_1.SyncServiceHelper.MetadataTable(null, sync.map_table)];
-                    case 9:
+                    case 10:
                         metaDataTable = _a.sent();
                         return [4 /*yield*/, SyncCache_1.SyncCache.setItem(sync.id + "-table_metadata", metaDataTable)];
-                    case 10:
+                    case 11:
                         _a.sent();
                         isFistLoop = false;
                         return [4 /*yield*/, SyncCache_1.SyncCache.setItem(sync.id + "-last_date", lastUpdate)];
-                    case 11:
-                        _a.sent();
-                        _a.label = 12;
                     case 12:
+                        _a.sent();
+                        _a.label = 13;
+                    case 13:
                         batchItems = batchItems.concat(soruceRes.rows);
                         offset = offset + this.limitData;
                         this.log.warn("Offset: " + offset);
                         return [4 /*yield*/, SyncCache_1.SyncCache.setItem(sync.id + "-rows", batchItems)];
-                    case 13:
+                    case 14:
                         _a.sent();
                         return [4 /*yield*/, SyncCache_1.SyncCache.getItem(sync.id + "-rows")];
-                    case 14:
+                    case 15:
                         rows_1 = _a.sent();
                         console.log(sync.id + " rows completed:::: ", rows_1 ? rows_1.length : 0);
                         /** check loop ends */
@@ -264,74 +267,74 @@ var SyncDMLService = /** @class */ (function () {
                             this.log.debug("completed batch data ...");
                             isChunkEnd = true;
                         }
-                        return [3 /*break*/, 16];
-                    case 15:
+                        return [3 /*break*/, 17];
+                    case 16:
                         this.log.debug("No data found...");
                         isChunkEnd = true;
-                        _a.label = 16;
-                    case 16: return [3 /*break*/, 6];
-                    case 17:
-                        updateQuery = "update sync_table set cache_done = true, cache_restart=false  where id='" + sync.id + "'";
-                        SyncServiceHelper_1.SyncServiceHelper.BatchQuery(updateSyncConfig, [updateQuery], this.log);
-                        if (!(batchItems && batchItems.length > 0)) return [3 /*break*/, 20];
-                        return [4 /*yield*/, SyncCache_1.SyncCache.setItem(sync.id + "-last_date", lastUpdate)];
+                        _a.label = 17;
+                    case 17: return [3 /*break*/, 7];
                     case 18:
+                        updateQuery = "update sync_table set cache_done = true, cache_restart=false  where id='" + sync.id + "'";
+                        SyncServiceHelper_1.SyncServiceHelper.BatchQueryApi(layeredStageUrl + 'batchquery', token, [updateQuery], this.log);
+                        if (!(batchItems && batchItems.length > 0)) return [3 /*break*/, 21];
+                        return [4 /*yield*/, SyncCache_1.SyncCache.setItem(sync.id + "-last_date", lastUpdate)];
+                    case 19:
                         _a.sent();
                         return [4 /*yield*/, SyncCache_1.SyncCache.setItem(sync.id + "-rows", batchItems)];
-                    case 19:
+                    case 20:
                         _a.sent();
                         isDataFound = true;
                         rows = batchItems;
-                        _a.label = 20;
-                    case 20:
-                        if (!(rows && rows.length > 0)) return [3 /*break*/, 23];
-                        return [4 /*yield*/, this.cacheUpdate(sourceDb, targetDb, token, sync, lastUpdate)];
+                        _a.label = 21;
                     case 21:
+                        if (!(rows && rows.length > 0)) return [3 /*break*/, 24];
+                        return [4 /*yield*/, this.cacheUpdate(sourceDb, targetDb, token, sync, lastUpdate)];
+                    case 22:
                         _a.sent();
                         return [4 /*yield*/, SyncCache_1.SyncCache.getItem(sync.id + "-rows")];
-                    case 22:
-                        rows = _a.sent();
-                        return [3 /*break*/, 20];
                     case 23:
+                        rows = _a.sent();
+                        return [3 /*break*/, 21];
+                    case 24:
+                        lastUpdateDateQuery = "select count(1) as count from " + sync.map_table + " where " + sync.cond + " ";
+                        lastUpdateDateData = void 0;
+                        return [4 /*yield*/, SyncServiceHelper_1.SyncServiceHelper.ExecuteQueryApi('http://localhost:5000/api/syncdata/' + 'executequery', token, sync.map_table, lastUpdateDateQuery, this.log)];
+                    case 25:
+                        lastUpdateDateData = _a.sent();
+                        this.log.info(lastUpdateDateData);
+                        count = lastUpdateDateData && lastUpdateDateData.rows.length > 0 ? lastUpdateDateData.rows[0]['count'] : 0;
                         updateQuery = [];
                         updateQuery.push("update sync_table set cache_done = false, cache_restart=true  where id='" + sync.id + "'");
                         if (isDataFound) {
-                            // let lastUpdateDateQuery = `select ${sync.sync_column}, ${sync.map_pk} from ${sync.map_table} where ${sync.cond} and ${sync.sync_column} is not null and ${sync.sync_column} <= now()  order by ${sync.sync_column} desc limit 1 `
-                            // this.log.info("lastUpdateDateQuery:=>>>>>>  " +`${lastUpdateDateQuery}`)
-                            // let lastUpdateDateData: any
-                            //   lastUpdateDateData = await SyncServiceHelper.ExecuteQueryApi(targetDb+'executequery', token, sync.map_table, lastUpdateDateQuery, this.log)
-                            // this.log.info(lastUpdateDateData)
-                            // lastUpdate =  lastUpdateDateData && lastUpdateDateData.rows.length>0 ? eval(`lastUpdateDateData.rows[0]['${sync.sync_column}']`) : lastUpdate
-                            // let lastUpdateId = lastUpdateDateData && lastUpdateDateData.rows.length>0 ? eval(`lastUpdateDateData.rows[0]['${sync.map_pk}']`) : 'dummyId'
                             // this.log.info(`************* ***** *************" + ${lastUpdateId} + ${lastUpdate}`)
                             // updateQuery.push(`update sync_table set last_update = '${lastUpdate  && lastUpdate !='NULL' && lastUpdate != 'null' ? lastUpdate: currentTime }', updated_on = '${currentTime}', last_updated_id = '${lastUpdateId}'  where id='${sync.id}'`);
-                            updateQuery.push("update sync_table set last_update = '" + lastUpdate + "', updated_on = '" + currentTime + "'  where id='" + sync.id + "'");
+                            updateQuery.push("update sync_table set last_update = '" + lastUpdate + "', updated_on = '" + currentTime + "', client_count = " + count + ", cache_restart= true  where id='" + sync.id + "'");
                         }
                         else {
-                            updateQuery.push("update sync_table set cache_done = false, cache_restart=true,  updated_on = '" + currentTime + "'  where id='" + sync.id + "'");
+                            updateQuery.push("update sync_table set cache_done = false, cache_restart=true,  client_count = " + count + ",  updated_on = '" + currentTime + "'  where id='" + sync.id + "'");
                         }
-                        SyncServiceHelper_1.SyncServiceHelper.BatchQuery(updateSyncConfig, updateQuery, this.log);
-                        return [3 /*break*/, 27];
-                    case 24:
+                        SyncServiceHelper_1.SyncServiceHelper.BatchQueryApi(layeredStageUrl + 'batchquery', token, updateQuery, this.log);
+                        return [3 /*break*/, 29];
+                    case 26:
                         err_2 = _a.sent();
                         this.log.warn(":::::::::::::::::::CATCH BLOCK START ::::::::::::::::::::::");
                         this.log.error(err_2);
                         updateQuery = null;
                         if (err_2 == Props_1.Props.RECORD_NOT_FOUND) {
-                            updateQuery = "update sync_table set updated_on = '" + currentTime + "'  where id='" + sync.id + "'";
+                            updateQuery = "update sync_table set updated_on = '" + currentTime + "', cache_restart=true  where id='" + sync.id + "'";
                         }
                         else {
-                            updateQuery = "update sync_table set updated_on = '" + currentTime + "'  where id='" + sync.id + "'";
+                            updateQuery = "update sync_table set updated_on = '" + currentTime + "', cache_restart=true  where id='" + sync.id + "'";
                         }
-                        return [4 /*yield*/, SyncServiceHelper_1.SyncServiceHelper.BatchQuery(updateSyncConfig, [updateQuery], this.log)];
-                    case 25:
+                        return [4 /*yield*/, SyncServiceHelper_1.SyncServiceHelper.BatchQueryApi(layeredStageUrl + 'batchquery', token, [updateQuery], this.log)];
+                    case 27:
                         _a.sent();
                         return [4 /*yield*/, SyncServiceHelper_1.SyncServiceHelper.ErrorMessage("DML", err_2, this.log)];
-                    case 26:
+                    case 28:
                         _a.sent();
                         this.log.warn(":::::::::::::::::::CATCH BLOCK ENDS ::::::::::::::::::::::");
                         throw err_2;
-                    case 27: return [2 /*return*/];
+                    case 29: return [2 /*return*/];
                 }
             });
         });

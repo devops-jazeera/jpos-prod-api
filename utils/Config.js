@@ -159,18 +159,22 @@ exports.setSyncStagingConfig = function () {
     }
 };
 exports.syncConfig = {
-    url: '',
-    token: ''
+    url: "",
+    syncUrl: "",
+    token: ""
 };
 exports.setSyncUrl = function () {
     try {
         var data = fs_1.readFileSync(__dirname + "/../sync_url_id_rsa", "utf-8");
         if (data) {
+            // console.log(data)
             var decodeData = CrpytoData_1.decrypt(JSON.parse(data));
             data = JSON.parse(decodeData);
-            console.log(data);
+            // console.log(data);
             if (data) {
+                // data.syncUrl = 'localhost:5100'
                 exports.syncConfig.url = "https://" + data.url + "/api/";
+                exports.syncConfig.syncUrl = "https://" + data.syncUrl + "/api/";
                 exports.syncConfig.token = data.token;
                 console.log(" \n\n SyncUrl set succesfully .... \n\n ", exports.syncConfig);
             }
@@ -180,6 +184,7 @@ exports.setSyncUrl = function () {
         console.error(error);
     }
 };
+
 exports.baseAuth = {
     user: "xxxx",
     password: "xxxxx",
