@@ -62,6 +62,7 @@ pg_1.types.setTypeParser(1114, function (stringValue) {
 });
 var axios = require("axios");
 var SyncServiceHelper = /** @class */ (function () {
+    // public static StagePool: Pool = new Pool(SyncServiceHelper.StageDBOptions());
     function SyncServiceHelper() {
     }
     SyncServiceHelper.BatchQuery = function (config, sqls, log) {
@@ -549,14 +550,8 @@ var SyncServiceHelper = /** @class */ (function () {
         return __awaiter(this, void 0, void 0, function () {
             var sql;
             return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        sql = "\n    INSERT INTO sync_error \n    (id, store_id, \"type\", error_msg, error_desc) \n    VALUES(\n      '" + App_1.App.UniqueNumber() + "', '" + STORE_ID + "', '" + type + "', '" + JSON.stringify(err) + "', '" + (err.message ? err.message : "") + "'\n    )\n  ";
-                        return [4 /*yield*/, SyncServiceHelper.BatchQuery(SyncServiceHelper.StageDBOptions(), [sql], log)];
-                    case 1:
-                        _a.sent();
-                        return [2 /*return*/];
-                }
+                sql = "\n    INSERT INTO sync_error \n    (id, store_id, \"type\", error_msg, error_desc) \n    VALUES(\n      '" + App_1.App.UniqueNumber() + "', '" + STORE_ID + "', '" + type + "', '" + JSON.stringify(err) + "', '" + (err.message ? err.message : "") + "'\n    )\n  ";
+                return [2 /*return*/];
             });
         });
     };
@@ -567,18 +562,18 @@ var SyncServiceHelper = /** @class */ (function () {
     //
     //     })
     // }
-    SyncServiceHelper.StageDBOptions = function () {
-        var stageDbOptions = Config.getStageDb();
-        return {
-            host: stageDbOptions.host,
-            port: stageDbOptions.port,
-            user: stageDbOptions.username,
-            password: stageDbOptions.password,
-            database: stageDbOptions.database,
-            max: 25,
-            idleTimeoutMillis: 0,
-        };
-    };
+    // public static StageDBOptions() {
+    //   let stageDbOptions = Config.getStageDb();
+    //   return {
+    //     host: stageDbOptions.host,
+    //     port: stageDbOptions.port,
+    //     user: stageDbOptions.username,
+    //     password: stageDbOptions.password,
+    //     database: stageDbOptions.database,
+    //     max: 25,
+    //     idleTimeoutMillis: 0,
+    //   };
+    // }
     // public static LocalDBOptions() {
     //   return {
     //     host: "localhost",
@@ -599,29 +594,34 @@ var SyncServiceHelper = /** @class */ (function () {
             idleTimeoutMillis: 0,
         };
     };
-    SyncServiceHelper.LayeredStageDBOptions = function () {
-        var syncStageDbOptions = Config.syncStageDbOptions; //Config.getSyncDb();
-        return {
-            host: syncStageDbOptions.host,
-            port: syncStageDbOptions.port,
-            user: syncStageDbOptions.username,
-            password: syncStageDbOptions.password,
-            database: syncStageDbOptions.database,
-            max: 25,
-            idleTimeoutMillis: 0,
-        };
-    };
+    // public static LayeredStageDBOptions() {
+    //   let syncStageDbOptions = Config.syncStageDbOptions; //Config.getSyncDb();
+    //   return {
+    //     host: syncStageDbOptions.host,
+    //     port: syncStageDbOptions.port,
+    //     user: syncStageDbOptions.username,
+    //     password: syncStageDbOptions.password,
+    //     database: syncStageDbOptions.database,
+    //     max: 25,
+    //     idleTimeoutMillis: 0,
+    //   };
+    // }
     SyncServiceHelper.syncUrl = function () {
         return Config.syncConfig; //Config.getSyncDb();
     };
     SyncServiceHelper.UpdateCall = function (type, log, data) {
         return __awaiter(this, void 0, void 0, function () {
-            var sql, layeredstageDb;
+            var sql, syncUrl, layeredStageUrl, stagUrl, token;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         sql = null;
-                        layeredstageDb = SyncServiceHelper.LayeredStageDBOptions();
+                        return [4 /*yield*/, SyncServiceHelper.syncUrl()];
+                    case 1:
+                        syncUrl = _a.sent();
+                        layeredStageUrl = syncUrl.syncUrl + "syncdata/";
+                        stagUrl = syncUrl.url + "syncdata/";
+                        token = syncUrl.token;
                         if (type == "RESET") {
                             sql = "UPDATE sync_source SET  is_reset = false, updated_on = '" + moment().toISOString() + "'  WHERE id='" + STORE_ID + "' ";
                         }
@@ -637,37 +637,42 @@ var SyncServiceHelper = /** @class */ (function () {
                         else if (type == "MAC") {
                             sql = "UPDATE sync_source SET  mac_address = '" + data + "', updated_on = '" + moment().toISOString() + "'  WHERE id='" + STORE_ID + "' ";
                         }
-                        if (!sql) return [3 /*break*/, 2];
-                        return [4 /*yield*/, SyncServiceHelper.BatchQuery(layeredstageDb, [sql], log)];
-                    case 1:
+                        if (!sql) return [3 /*break*/, 3];
+                        return [4 /*yield*/, SyncServiceHelper.BatchQueryApi(layeredStageUrl + 'batchquery', token, [sql], log)];
+                    case 2:
                         _a.sent();
-                        _a.label = 2;
-                    case 2: return [2 /*return*/];
+                        _a.label = 3;
+                    case 3: return [2 /*return*/];
                 }
             });
         });
     };
     SyncServiceHelper.StoreSource = function (storeid, log) {
         return __awaiter(this, void 0, void 0, function () {
-            var sql, stageDb, syncResults, error_1;
+            var sql, syncUrl, layeredStageUrl, stagUrl, token, syncResults, error_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 2, , 3]);
-                        stageDb = SyncServiceHelper.StageDBOptions();
+                        _a.trys.push([0, 3, , 4]);
+                        return [4 /*yield*/, SyncServiceHelper.syncUrl()];
+                    case 1:
+                        syncUrl = _a.sent();
+                        layeredStageUrl = syncUrl.syncUrl + "syncdata/";
+                        stagUrl = syncUrl.url + "syncdata/";
+                        token = syncUrl.token;
                         sql = "select * from sync_source where id='" + storeid + "' ";
                         log.info(sql);
-                        return [4 /*yield*/, SyncServiceHelper.ExecuteQuery(stageDb, sql, log)];
-                    case 1:
+                        return [4 /*yield*/, SyncServiceHelper.ExecuteQueryApi(stagUrl, token, 'sync_source', sql, log)];
+                    case 2:
                         syncResults = _a.sent();
                         syncResults = syncResults.rows;
                         syncResults = syncResults.length > 0 ? syncResults[0] : null;
                         return [2 /*return*/, Promise.resolve(syncResults)];
-                    case 2:
+                    case 3:
                         error_1 = _a.sent();
                         log.error(error_1);
                         throw error_1;
-                    case 3: return [2 /*return*/];
+                    case 4: return [2 /*return*/];
                 }
             });
         });
@@ -743,7 +748,6 @@ var SyncServiceHelper = /** @class */ (function () {
     //public static syncTargetTableName: string = "";
     SyncServiceHelper.syncSourceDDLTableName = "sync_ddl";
     SyncServiceHelper.LocalPool = new pg_1.Pool(SyncServiceHelper.LocalDBOptions());
-    SyncServiceHelper.StagePool = new pg_1.Pool(SyncServiceHelper.StageDBOptions());
     return SyncServiceHelper;
 }());
 exports.SyncServiceHelper = SyncServiceHelper;

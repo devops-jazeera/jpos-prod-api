@@ -58,7 +58,7 @@ var SyncDMLService = /** @class */ (function () {
     }
     SyncDMLService.prototype.deleteExecute = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var layerStageDbConfig, syncUrl, stagUrl, token, localUrl, sql, syncResults, sysDeleteQuery, tableDeleteQuery, err_1;
+            var syncUrl, stagUrl, token, localUrl, sql, syncResults, sysDeleteQuery, tableDeleteQuery, err_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -66,7 +66,6 @@ var SyncDMLService = /** @class */ (function () {
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 6, , 7]);
-                        layerStageDbConfig = SyncServiceHelper_1.SyncServiceHelper.LayeredStageDBOptions();
                         return [4 /*yield*/, SyncServiceHelper_1.SyncServiceHelper.syncUrl()];
                     case 2:
                         syncUrl = _a.sent();
@@ -106,14 +105,13 @@ var SyncDMLService = /** @class */ (function () {
     SyncDMLService.prototype.execute = function (type, priority) {
         if (priority === void 0) { priority = 9; }
         return __awaiter(this, void 0, void 0, function () {
-            var layeredStageDbConfig, syncUrl, layeredStageUrl, stagUrl, token, localUrl, sql, utcDate, utcDateTime, currentTime, syncResults, sourceDB, targetDB, error_1;
+            var syncUrl, layeredStageUrl, stagUrl, token, localUrl, sql, utcDate, utcDateTime, currentTime, syncResults, sourceDB, targetDB, error_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         this.log.info("###########################################");
                         // App.Sleep(2000);
                         this.log.debug("!!!!!!!!!!!!!!!!!!!! " + STORE_ID + " - " + new Date().toISOString() + "!!!!!!!!!!!!!!!!!!!!");
-                        layeredStageDbConfig = SyncServiceHelper_1.SyncServiceHelper.LayeredStageDBOptions();
                         return [4 /*yield*/, SyncServiceHelper_1.SyncServiceHelper.syncUrl()];
                     case 1:
                         syncUrl = _a.sent();
